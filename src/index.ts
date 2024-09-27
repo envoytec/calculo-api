@@ -56,6 +56,7 @@ const main = async () => {
       if(provi.length > 0){
           for (let row of provi) {
             let dadosProvi = new provimentoGeral();
+
             dadosProvi.descricao = row.Descricao
             dadosProvi.valor = row.Valor
             
