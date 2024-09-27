@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
 import { ResumoCalculo } from "./ResumoCalculo"
-// import { provimentoGeral } from "./provimentoGeral"
+import { provimentoGeral } from "./provimentoGeral"
 
 @Entity()
 export class DadosProcesso {
@@ -32,7 +32,7 @@ export class DadosProcesso {
     @OneToMany(() => ResumoCalculo, resumoCalculo => resumoCalculo.dadosProcesso)
     reclamanteResumoCalculo: ResumoCalculo[]
 
-    // @OneToMany(() => provimentoGeral, ProvimentoGeral => ProvimentoGeral.dadosProcesso)
-    // dadosProvimento: provimentoGeral[]
+    @OneToMany(() => provimentoGeral, ProvimentoGeral => ProvimentoGeral.dadosProcesso)
+    dadosProvimento: provimentoGeral[]
 
 }
