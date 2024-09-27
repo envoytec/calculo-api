@@ -1,45 +1,39 @@
 type IProvimento = {
-    Descricao: string
-    Valor: number
-}
+  Descricao: string;
+  Valor: number;
+};
 
-export const extractProviment = (text) => {
-    const beginWord = "Percentual de Parcelas Remuneratórias";
-    const endWord = "Critério de Cálculo e Fundamentação Legal";
+export const extractProviment = (text: string): IProvimento[] => {
+  const beginWord = "Percentual de Parcelas Remuneratórias";
+  const endWord = "Critério de Cálculo e Fundamentação Legal";
 
-    const tableArray: Array<any> = text.replaceAll(/\n/g, '|')
-        .replaceAll('   ', '')
-        .split('|')
-        .filter(v => v.trim() !== "").map(v => {
-            if (!isNaN(v.trim().replace('.', '').replace(',', '.') * 1)) {
-                return v.trim().replace('.', '').replace(',', '.') * 1
-            } else {
-                return v.trim();
-            }
-        });
+  const tableArray: Array<any> = text.replace(/\n/g, '|')
+    .replace(/ {3,}/g, '')
+    .split('|')
+    .filter(v => v.trim() !== "").map(v => {
+      const num = parseFloat(v.trim().replace('.', '').replace(',', '.'));
+      return isNaN(num) ? v.trim() : num;
+    });
 
-    const initialIndex = tableArray.indexOf(beginWord) + 1;
-    const endIndex = tableArray.findIndex(item => item.toString().trim().toLocaleLowerCase().includes(endWord.toLocaleLowerCase()));
-    const x = tableArray.splice(initialIndex, endIndex - initialIndex);
-    const finalArray = [];
+  const initialIndex = tableArray.indexOf(beginWord) + 1;
+  const endIndex = tableArray.findIndex(item => item.toString().trim().toLocaleLowerCase().includes(endWord.toLocaleLowerCase()));
+  const x = tableArray.slice(initialIndex, endIndex);
+  const finalArray: Array<[string, number]> = [];
 
-    let tempArray = [];
-    
-    x.forEach((item, index) => {
-        if(typeof item === 'string' && (index + 1 < x.length) && typeof x[index+1] === 'number'){
-            tempArray.push(item);
-            tempArray.push(x[index + 1]);
-            finalArray.push(tempArray);
-            tempArray = [];
-        }
+  let tempArray: [string, number] | null = null;
+  
+  x.forEach((item, index) => {
+    if (typeof item === 'string' && (index + 1 < x.length) && typeof x[index + 1] === 'number') {
+      tempArray = [item, x[index + 1] as number];
+      finalArray.push(tempArray);
+      tempArray = null;
+    }
+  });
 
-    const y: IProvimento[] = finalArray.map(f => {
-        if(f.valores.length > 1){
-            f.Descricao= f.valores[0];
-            f.valor = f.valores[1];
-          }
-          return f;
-    }).filter(f => f.valores.length > 1);
-        return y;
-    }) 
-}
+  const y: IProvimento[] = finalArray.map(f => ({
+    Descricao: f[0],
+    Valor: f[1]
+  }));
+  console.log("teste extract", y)
+  return y;
+};

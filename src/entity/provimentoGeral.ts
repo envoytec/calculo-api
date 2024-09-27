@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, } from "typeorm"
-import { ResumoCalculo } from "./ResumoCalculo"
+import { Entity, PrimaryGeneratedColumn, Column,JoinColumn, ManyToOne} from "typeorm"
+import { DadosProcesso } from "./DadosProcesso"
 
 @Entity()
 export class provimentoGeral {
@@ -12,5 +12,9 @@ export class provimentoGeral {
 
     @Column("double")
     valor: number
-
-}
+    
+    @ManyToOne(() => DadosProcesso)
+    @JoinColumn({ name: 'dadosProcessoId' })
+    dadosProcesso: DadosProcesso;
+  
+  }

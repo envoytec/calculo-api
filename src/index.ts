@@ -7,6 +7,7 @@ import { dateFromPtToEn } from './util';
 import { readFileSync } from 'node:fs';
 import { ResumoCalculo } from "./entity/ResumoCalculo"
 import { extractProviment } from "./Provimento"
+import { provimentoGeral } from "./entity/provimentoGeral"
 
 const main = async () => {
   AppDataSource.initialize()
@@ -37,7 +38,7 @@ const main = async () => {
       AppDataSource.manager.save(dadosProcesso);
 
       const resume = extractResume(rawData);
-      const provi = extractProviment(rawData)
+      
       if(resume.length > 0){
         for (let row of resume) {
           let resumoCalculo = new ResumoCalculo();
@@ -51,7 +52,16 @@ const main = async () => {
           await AppDataSource.manager.save(resumoCalculo);
         }
       }
-
+      const provi = extractProviment(rawData);
+      if(provi.length > 0){
+          for (let row of provi) {
+            let dadosProvi = new provimentoGeral();
+            dadosProvi.descricao = row.Descricao
+            dadosProvi.valor = row.Valor
+            
+            await AppDataSource.manager.save(dadosProvi)
+          }
+      }
     }).catch((error) => console.log(error))
 }
 main()
