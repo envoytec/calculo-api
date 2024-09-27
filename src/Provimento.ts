@@ -4,7 +4,7 @@ type IProvimento = {
   };
   
   export const extractProviment = (text: string): IProvimento[] => {
-    const beginWord = "Percentual de Parcelas Remuneratórias";
+    const beginWord = "VERBAS";
     const endWord = "Critério de Cálculo e Fundamentação Legal";
   
     const tableArray: Array<any> = text.replace(/\n/g, '|')
@@ -15,7 +15,7 @@ type IProvimento = {
         return isNaN(num) ? v.trim() : num;
       });
   
-    const initialIndex = tableArray.indexOf(beginWord) + 1;
+    const initialIndex = tableArray.indexOf(beginWord);
     const endIndex = tableArray.findIndex(item => item.toString().trim().toLocaleLowerCase().includes(endWord.toLocaleLowerCase()));
     const x = tableArray.slice(initialIndex, endIndex);
     const finalArray: Array<[string, number]> = [];
@@ -34,5 +34,6 @@ type IProvimento = {
       Descricao: f[0],
       Valor: f[1]
     }));
+    console.log(y)
     return y;
   };
