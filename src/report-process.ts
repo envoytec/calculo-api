@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 import { extractBetween } from './util';
 
+
 export const extractData = async (filePath) => {
   try {
     const browser = await puppeteer.launch({ headless: true, executablePath: process.env.EXECUTABLE_PATH });
@@ -48,6 +49,8 @@ type IResumoCalculo = {
   juros: number,
   total: number,
   valores: Array<number>
+
+ 
 }
 
 

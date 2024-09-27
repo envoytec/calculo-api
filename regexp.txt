@@ -1,0 +1,7 @@
+const x = document.querySelector("table").textContent.replaceAll(/\n/g, '|').replaceAll('   ', '').split('|').filter(v => v.trim() !== "").map(v => {
+    if(!isNaN(v.trim().replace('.', '').replace(',', '.') * 1)){
+        return v.trim().replace('.', '').replace(',', '.') * 1
+    } else {
+        return v;
+    }
+});

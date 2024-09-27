@@ -1,8 +1,9 @@
 node_modules/
 .env
 dist/
-teste.js
-backup.txt
-relatorio.sql
 extractheader.js
+regexp.txt
+teste.js
 script.js
+MYSQL.txt
+

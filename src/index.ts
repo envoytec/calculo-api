@@ -6,6 +6,7 @@ import { extractData, extractHeader, extractResume} from './report-process'
 import { dateFromPtToEn } from './util';
 import { readFileSync } from 'node:fs';
 import { ResumoCalculo } from "./entity/ResumoCalculo"
+import { extractProviment } from "./Provimento"
 
 const main = async () => {
   AppDataSource.initialize()
@@ -36,7 +37,7 @@ const main = async () => {
       AppDataSource.manager.save(dadosProcesso);
 
       const resume = extractResume(rawData);
-      console.log(resume)
+      const provi = extractProviment(rawData)
       if(resume.length > 0){
         for (let row of resume) {
           let resumoCalculo = new ResumoCalculo();

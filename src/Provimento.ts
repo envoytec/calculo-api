@@ -1,4 +1,9 @@
-export const extractResume = (text) => {
+type IProvimento = {
+    Descricao: string
+    Valor: number
+}
+
+export const extractProviment = (text) => {
     const beginWord = "Percentual de Parcelas Remuneratórias";
     const endWord = "Critério de Cálculo e Fundamentação Legal";
 
@@ -27,6 +32,14 @@ export const extractResume = (text) => {
             finalArray.push(tempArray);
             tempArray = [];
         }
-        return finalArray;
+
+    const y: IProvimento[] = finalArray.map(f => {
+        if(f.valores.length > 1){
+            f.Descricao= f.valores[0];
+            f.valor = f.valores[1];
+          }
+          return f;
+    }).filter(f => f.valores.length > 1);
+        return y;
     }) 
 }
