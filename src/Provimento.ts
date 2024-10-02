@@ -43,11 +43,11 @@ export const extractProviment = (text: string): IProvimento[] => {
             tempArray = null;
         }
     });
-
+// Adicionar alternancia a cada dois elementos para separa-los em dois arrays para as tabelas.
     const y: IProvimento[] = finalArray.map(f => ({
         Descricao: f[0],
         Valor: f[1]
     }));
-    console.log(y)
+   
     return y;
 }

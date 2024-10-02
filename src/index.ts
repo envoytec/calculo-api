@@ -53,7 +53,7 @@ const main = async () => {
         }
       }
       const provi = extractProviment(rawData);
-      if(provi.length > 0){
+      if(provi.length > 1){
           for (let row of provi) {
             let dadosProvi = new provimentoGeral();
 
@@ -62,7 +62,7 @@ const main = async () => {
             
             await AppDataSource.manager.save(dadosProvi)
           }
-      }
+      } console.log(provi)
     }).catch((error) => console.log(error))
 }
 main()

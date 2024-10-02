@@ -33,6 +33,6 @@ export class DadosProcesso {
     reclamanteResumoCalculo: ResumoCalculo[]
 
     @OneToMany(() => provimentoGeral, ProvimentoGeral => ProvimentoGeral.dadosProcesso)
-    dadosProvimento: provimentoGeral[]
+    reclamanteProvimento: provimentoGeral[]
 
 }

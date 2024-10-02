@@ -13,7 +13,7 @@ export class provimentoGeral {
     @Column("double")
     valor: number
     
-    @ManyToOne(() => DadosProcesso, dadosProcesso => dadosProcesso.reclamanteResumoCalculo)
+    @ManyToOne(() => DadosProcesso, dadosProcesso => dadosProcesso.reclamanteProvimento)
     dadosProcesso: DadosProcesso;
   
   }
