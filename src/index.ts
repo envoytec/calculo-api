@@ -53,28 +53,17 @@ const main = async () => {
         }
       }
       const provi = extractProviment(rawData);
-      if(provi.typeReclamante.length > 1) {
-        for (let row of provi.typeReclamante) {
+      if(provi.length > 1) {
+        for (let row of provi) {
           let dadosProvi = new provimentoGeral()
 
           dadosProvi.descricao = row.Descricao;
           dadosProvi.valor = row.Valor;
+          dadosProvi.tipo = row.Tipo;
 
           await AppDataSource.manager.save(dadosProvi);
         }
       }
-
-      if(provi.typeReclamado.length > 1) {
-        for (let row of provi.typeReclamado) {
-          let dadosProvi = new provimentoGeral()
-
-          dadosProvi.descricao = row.Descricao;
-          dadosProvi.valor = row.Valor;
-
-          await AppDataSource.manager.save(dadosProvi);
-        }
-      }
-      console.log(provi)
     }).catch((error) => console.log(error))
 }
 main()

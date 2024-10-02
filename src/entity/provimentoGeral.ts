@@ -6,13 +6,16 @@ export class provimentoGeral {
 
     @PrimaryGeneratedColumn()
     id: number
-
+  
     @Column()
     descricao: string
 
     @Column("double")
     valor: number
     
+    @Column()
+    tipo: string
+  
     @ManyToOne(() => DadosProcesso, dadosProcesso => dadosProcesso.reclamanteProvimento)
     dadosProcesso: DadosProcesso;
   

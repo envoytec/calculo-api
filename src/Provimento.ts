@@ -1,6 +1,7 @@
 type IProvimento = {
     Descricao: string;
     Valor: number;
+    Tipo?: string;
 };
 
 
@@ -12,7 +13,7 @@ const convertParenthesesToNumber = (value) => {
     }
     return value
 }
-export const extractProviment = (text: string): { typeReclamante: IProvimento[], typeReclamado: IProvimento[] } => {
+export const extractProviment = (text: string): IProvimento[] => {
     const beginWord = "VERBAS";
     const endWord = "Critério de Cálculo e Fundamentação Legal";
     const stopToggle = "Líquido Devido ao Reclamante"
@@ -44,8 +45,7 @@ export const extractProviment = (text: string): { typeReclamante: IProvimento[],
         }
     });
     // Adicionar alternancia a cada dois elementos para separa-los em dois arrays para as tabelas.
-    const typeReclamante: IProvimento[] = [];
-    const typeReclamado: IProvimento[] = [];
+    const provimentoArr: IProvimento[] = [];
     let toggle = true;
     let stopToggleFound = false;
 
@@ -60,14 +60,14 @@ export const extractProviment = (text: string): { typeReclamante: IProvimento[],
         }
         if (!stopToggleFound) {
             if (index % 2 < 1) {
-                typeReclamante.push(provimento)
+                provimento.Tipo = "reclamante"
             } else {
-                typeReclamado.push(provimento)
+                provimento.Tipo = "reclamada"
             }
         } else {
-            typeReclamante.push(provimento)
+            provimento.Tipo = "reclamante"
         }
-
+        provimentoArr.push(provimento)
     });
     // Método sem separar tabela
     // const y: IProvimento[] = finalArray.map(f => ({
@@ -75,5 +75,5 @@ export const extractProviment = (text: string): { typeReclamante: IProvimento[],
     //     Valor: f[1]
     // }));
 
-    return { typeReclamante, typeReclamado };
+    return provimentoArr;
 }
