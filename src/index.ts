@@ -2,11 +2,10 @@ import "reflect-metadata"
 import "dotenv/config"
 import { AppDataSource } from "./data-source"
 import { DadosProcesso } from './entity/DadosProcesso'
-import { extractData, extractHeader, extractResume} from './report-process'
+import { extractData, extractHeader, extractResume, extractProviment} from './report-process'
 import { dateFromPtToEn } from './util';
 import { readFileSync } from 'node:fs';
 import { ResumoCalculo } from "./entity/ResumoCalculo"
-import { extractProviment } from "./Provimento"
 import { provimentoGeral } from "./entity/provimentoGeral"
 
 const main = async () => {
