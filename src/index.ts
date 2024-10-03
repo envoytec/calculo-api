@@ -12,7 +12,7 @@ const main = async () => {
   AppDataSource.initialize()
     .then(async () => {
       //const rawData = await extractData(process.env.REPORT_FILE);
-      const rawData = readFileSync('C:\\Users\\kaue\\Desktop\\Tsc\\text.txt', { encoding: 'utf8', flag: 'r' });
+      const rawData = readFileSync('C:\\Users\\kaue\\Desktop\\Tsc\\planilhas1\\anderson.txt', { encoding: 'utf8', flag: 'r' });
       const header = extractHeader(rawData);
       const dataAjuizamento = dateFromPtToEn(header.dataAjuizamento);
       const dataLiquidacao = dateFromPtToEn(header.dataLiquidacao);

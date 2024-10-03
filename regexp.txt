@@ -5,3 +5,19 @@ const x = document.querySelector("table").textContent.replaceAll(/\n/g, '|').rep
         return v;
     }
 });
+
+
+
+
+
+
+
+const text = document.querySelector("table").textContent
+    .replaceAll(/\n/g, '|') // Substitui novas linhas por '|'
+    .replaceAll('   ', '') // Remove espaços adicionais
+    .split('|') // Divide em partes
+    .filter(v => v.trim() !== "") // Remove elementos vazios
+   
+    .join('\n'); // Junta tudo em uma string, separando por novas linhas
+
+console.log(text); // Exibe o texto formatado no console

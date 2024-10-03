@@ -118,7 +118,7 @@ export const extractProviment = (text: string): IProvimento[] => {
   //     Descricao: f[0],
   //     Valor: f[1]
   // }));
-  
+ 
   return provimentoArr;
 }
 
@@ -171,6 +171,6 @@ export const extractResume = (text) => {
     }
     return f;
   }).filter(f => f.valores.length > 2);
-
+console.log(y)
   return y;
 }
