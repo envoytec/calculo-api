@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm"
 import { DadosProcesso } from "./DadosProcesso"
 
 @Entity()
-export class provimentoGeral {
+export class ProvimentoGeral {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -15,6 +15,9 @@ export class provimentoGeral {
     
     @Column()
     tipo: string
+
+    @Column()
+    ordem: number
   
     @ManyToOne(() => DadosProcesso, dadosProcesso => dadosProcesso.reclamanteProvimento)
     dadosProcesso: DadosProcesso;

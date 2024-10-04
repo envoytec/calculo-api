@@ -1,3 +1,5 @@
+import * as fs from "fs"
+
 export const searchPattern = (text, input) => {
   return text.indexOf(input);
 }
@@ -15,4 +17,8 @@ export const dateFromPtToEn = (dateString) => {
       return `${year}-${month}-${day} 00:00:00`;
   }
   return null;
+}
+
+export const readFiles = (path) => {
+  return fs.readdirSync(path);
 }
