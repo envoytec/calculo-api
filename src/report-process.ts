@@ -176,6 +176,6 @@ export const extractResume = (text) => {
     }
     return f;
   }).filter(f => f.valores.length > 2);
-  console.log(y)
+ 
   return y;
 }
