@@ -1,8 +1,54 @@
-delete from resumo_calculo where id > 0;
-delete from dados_processo where id > 0;
-select * from dados_processo;
-select * from resumo_calculo;
+SELECT 
+    d.calculo as 'Código',
+    d.reclamante as 'Reclamante',
+    d.reclamado as 'Reclamada',
+    d.processo as 'Número do processo',
+    d.periodoCalculo as 'Período cálculo',
+    d.dataAjuizamento as 'Data do ajuizamento',
+    d.dataLiquidacao as 'Data da liquidação',
+    r.descricao as 'Verba',
+    REPLACE(r.valor, '.', ',') AS 'Valor corrigido',
+    REPLACE(r.juros, '.', ',') AS 'Juros',
+    REPLACE(r.total, '.', ',') AS 'Valor Total'
+FROM
+    resumo_calculo r
+        INNER JOIN
+    dados_processo d ON r.dadosProcessoId = d.id
+ORDER BY d.reclamante, r.ordem asc;
 
-select r.descricao, d.reclamado, d.reclamante, d.processo
-from dados_processo d inner join resumo_calculo r on d.id = r.dadosProcessoId
-order by d.reclamado desc limit 24;
+
+
+
+
+
+
+
+
+
+
+BUSCAR VALOR Total
+
+SELECT 
+    d.calculo AS 'Código',
+    d.reclamante AS 'Reclamante',
+    d.reclamado AS 'Reclamada',
+    d.processo AS 'Número do processo',
+    d.periodoCalculo AS 'Período cálculo',
+    d.dataAjuizamento AS 'Data do ajuizamento',
+    d.dataLiquidacao AS 'Data da liquidação',
+    REPLACE(SUM(r.valor), '.', ',') AS 'Valor corrigido',
+    REPLACE(SUM(r.juros), '.', ',') AS 'Juros',
+    REPLACE(SUM(r.total), '.', ',') AS 'Valor Total'
+FROM
+    resumo_calculo r
+    INNER JOIN dados_processo d ON r.dadosProcessoId = d.id
+GROUP BY 
+    d.calculo, 
+    d.reclamante, 
+    d.reclamado, 
+    d.processo, 
+    d.periodoCalculo, 
+    d.dataAjuizamento, 
+    d.dataLiquidacao
+ORDER BY 
+    d.reclamante ASC;

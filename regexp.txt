@@ -13,11 +13,11 @@ const x = document.querySelector("table").textContent.replaceAll(/\n/g, '|').rep
 
 
 const text = document.querySelector("table").textContent
-    .replaceAll(/\n/g, '|') // Substitui novas linhas por '|'
-    .replaceAll('   ', '') // Remove espaços adicionais
+    .replaceAll(/\n/g, '|') 
+    .replaceAll('   ', '') 
     .split('|') // Divide em partes
-    .filter(v => v.trim() !== "") // Remove elementos vazios
+    .filter(v => v.trim() !== "") 
    
-    .join('\n'); // Junta tudo em uma string, separando por novas linhas
+    .join('\n'); 
 
-console.log(text); // Exibe o texto formatado no console
+console.log(text); 

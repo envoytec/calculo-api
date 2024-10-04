@@ -19,6 +19,9 @@ export class ResumoCalculo {
     @Column("double")
     total: number
 
+    @Column()
+    ordem: number
+
     @ManyToOne(() => DadosProcesso, dadosProcesso => dadosProcesso.reclamanteResumoCalculo)
     dadosProcesso: DadosProcesso;
 

@@ -50,8 +50,12 @@ type IProvimento = {
 
 const convertParenthesesToNumber = (value) => {
   const match = value.match(/\(([^)]+)\)/);
-  if (match) {
+  const endsWithNumberOrPorcent = /\(\s*\d+(\.\d+)?\s*%\s*\)/.test(value.trim());
+  if (match && !endsWithNumberOrPorcent) {
     const num = parseFloat(match[1].replace('.', '').replace(',', '.'));
+    if(isNaN(num)){
+      return value;
+    }
     return -num
   }
   return value
@@ -139,10 +143,11 @@ export const extractResume = (text) => {
     .replaceAll('   ', '')
     .split('|')
     .filter(v => v.trim() !== "").map(v => {
-      if (!isNaN(v.trim().replace('.', '').replace(',', '.') * 1)) {
+      const trimmedValue = v.trim()
+      if (!isNaN(trimmedValue.replace('.', '').replace(',', '.') * 1)) {
         return v.trim().replace('.', '').replace(',', '.') * 1
       } else {
-        return v.trim();
+        return convertParenthesesToNumber(trimmedValue);
       }
     });
 
@@ -171,6 +176,6 @@ export const extractResume = (text) => {
     }
     return f;
   }).filter(f => f.valores.length > 2);
-console.log(y)
+  console.log(y)
   return y;
 }
