@@ -7,8 +7,15 @@ import { dateFromPtToEn, readFiles } from './util';
 import { ResumoCalculo } from "./entity/ResumoCalculo"
 import { ProvimentoGeral } from "./entity/provimentoGeral"
 import { join } from 'path'
+import fastify = require("fastify")
+import { routes } from './routes';
 
 const main = async () => {
+
+  const server = fastify({logger: true})
+  await server.register(routes);
+
+
   AppDataSource.initialize()
     .then(async () => {
       const filesList = readFiles(process.env.REPORT_DIR);
@@ -81,6 +88,15 @@ const main = async () => {
         })
       }
     }).catch((error) => console.log(error))
+
+    const port = 3000;
+    server.listen({port}, (err) => {{
+      if (err) {
+        console.error(err)
+        process.exit(1);
+      }
+      console.log(`Servidor rodando na porta ${port}`)
+    }})
 }
 
 main()

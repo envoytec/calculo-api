@@ -52,3 +52,11 @@ GROUP BY
     d.dataLiquidacao
 ORDER BY 
     d.reclamante ASC;
+
+
+
+ProvimentoGeral
+
+
+select * from provimento_geral p inner join dados_processo d on p.dadosProcessoId = d.id 
+where d.calculo = 932
