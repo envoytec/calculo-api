@@ -90,13 +90,13 @@ const main = async () => {
     }).catch((error) => console.log(error))
 
     const port = 3000;
-    server.listen({port}, (err) => {{
+    server.listen({port}, (err) => {
       if (err) {
         console.error(err)
         process.exit(1);
       }
       console.log(`Servidor rodando na porta ${port}`)
-    }})
+    })
 }
 
 main()

@@ -10,16 +10,23 @@ if (!fs.existsSync(UPLOAD_DIR)) {
 }
 
 
-export async function routes(fastify) {
-  fastify.register(require(fastifyMultipart));
+export async function routes(fastify: any) {
+  fastify.register(fastifyMultipart);
+
+  fastify.get('/', async (req, reply) => {
+    return { message: 'Servidor está funcionando' };
+  });
 
 
-  fastify.post('/files-html', async (req, reply) => {
+  fastify.post('/files', async (req, reply) => {
     const data = await req.file();
-
-    if (!data) {
+    const { filebase64, fichaId} = req.body
+    
+    
+    if (!filebase64 || !fichaId) {
       return reply.status(400).send('Nenhum arquivo foi enviado.');
     }
+
 
     const filename = `${data.fieldname}-${Date.now()}${path.extname(data.filename)}`;
     const filepath = path.join(UPLOAD_DIR, filename);
@@ -37,13 +44,4 @@ export async function routes(fastify) {
     });
   });
 
-  // Inicializa o servidor
-  const port = 3000;
-  fastify.listen(port, (err) => {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
-    console.log(`Servidor rodando na porta ${port}`);
-  });
 }
