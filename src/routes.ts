@@ -13,8 +13,11 @@ if (!fs.existsSync(UPLOAD_DIR)) {
 export async function routes(fastify: any) {
   fastify.register(fastifyMultipart);
 
-  fastify.get('/', (req, reply) => {
-    return { message: 'Servidor está funcionando' };
+  fastify.get('/files', async (req, reply) => {
+    const apiUrl = '';
+    const filebase64 = await fetch(`${apiUrl}${req.query.file}`)
+    return reply.send(filebase64)
+      
   });
 
 
