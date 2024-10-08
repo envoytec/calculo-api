@@ -11,7 +11,7 @@ import fastify = require("fastify")
 import { routes } from './routes';
 
 const main = async () => {
-
+// Criando instância do servidor
   const server = fastify({logger: true})
   await server.register(routes);
 
@@ -88,7 +88,7 @@ const main = async () => {
         })
       }
     }).catch((error) => console.log(error))
-
+//Decidindo a porta em que vai rodar
     const port = 3000;
     server.listen({port}, (err) => {
       if (err) {
