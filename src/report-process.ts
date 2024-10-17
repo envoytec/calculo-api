@@ -138,12 +138,17 @@ export const extractResume = (text) => {
 
   const beginWord = "Total";
   const endWord = "Percentual de Parcelas Remuneratórias";
+  const blackListWord = [
+	"Cálculo liquidado por offline na versão", 
+  "Pág.",
+  ];
 
   const tableArray: Array<any> = text.replaceAll(/\n/g, '|')
     .replaceAll('   ', '')
     .split('|')
-    .filter(v => v.trim() !== "").map(v => {
+    .filter(v => v.trim() !== "" && blackListWord.findIndex(bw => v.includes(bw)) === -1).map(v => {
       const trimmedValue = v.trim()
+      
       if (!isNaN(trimmedValue.replace('.', '').replace(',', '.') * 1)) {
         return v.trim().replace('.', '').replace(',', '.') * 1
       } else {
@@ -176,6 +181,6 @@ export const extractResume = (text) => {
     }
     return f;
   }).filter(f => f.valores.length > 2);
- 
+ console.log(y)
   return y;
 }
