@@ -16,7 +16,7 @@ const main = async () => {
   await server.register(routes);
 
 
-  AppDataSource.initialize()
+  AppDataSource.initialize()  
     .then(async () => {
       const filesList = readFiles(process.env.REPORT_DIR);
 
@@ -89,7 +89,7 @@ const main = async () => {
       }
     }).catch((error) => console.log(error))
   //Decidindo a porta em que vai rodar
-  const port = 3000;
+  const port = 5070;
   server.listen({ port }, (err) => {
     if (err) {
       console.error(err)

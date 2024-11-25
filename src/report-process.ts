@@ -20,7 +20,7 @@ export const extractData = async (filePath) => {
   }
 }
 
-export const extractHeader = (text) => {
+export const extractHeader = (text: any) => {
   const cleanedText = text.replaceAll(/\n/g, '').replaceAll(/\s+/g, ' ');
 
   const processo = extractBetween(cleanedText, "Processo:", "Cálculo:");
