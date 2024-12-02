@@ -1,14 +1,16 @@
 import "reflect-metadata"
 import "dotenv/config"
-import { AppDataSource } from "./data-source"
+import { AppDataSource } from "./db/data-source"
 import { DadosProcesso } from './entity/DadosProcesso'
-import { extractData, extractHeader, extractResume, extractProviment } from './report-process'
-import { dateFromPtToEn, readFiles } from './util';
+import { extractData, extractHeader } from './services/headerCalculo'
+import { extractProviment } from "./services/provimentoCalculo"
+import { extractResume } from "./services/resumoCalculo"
+import { dateFromPtToEn, readFiles } from './utils/util';
 import { ResumoCalculo } from "./entity/ResumoCalculo"
 import { ProvimentoGeral } from "./entity/provimentoGeral"
 import { join } from 'path'
 import fastify = require("fastify")
-import { routes } from './routes/server';
+import { routes } from './routes/routes';
 
 const main = async () => {
   //Criando instância do servidor
@@ -89,7 +91,7 @@ const main = async () => {
       }
     }).catch((error) => console.log(error))
   //Decidindo a porta em que vai rodar
-  const port = 5070;
+  const port = 145;
   server.listen({ port }, (err) => {
     if (err) {
       console.error(err)
@@ -98,5 +100,5 @@ const main = async () => {
     console.log(`Servidor rodando na porta ${port}`)
   })
 }
-
+console.info(main)
 main()
