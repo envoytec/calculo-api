@@ -19,15 +19,20 @@ const convertParenthesesToNumber = (value) => {
 
 export const extractProviment = (text: string): IProvimento[] => {
     const beginWord = "VERBAS";
-    const beginWordSub = "INDENIZAÇÃO POR DANO MATERIAL";
+    const beginWordSub = "Descrição de Créditos e Descontos do Reclamante";
     const endWord = "Critério de Cálculo e Fundamentação Legal";
     const stopToggle = "Líquido Devido ao Reclamante"
 
     const tableArray: Array<any> = text.replace(/\n/g, '|')
-        .replace(/ {3,}/g, '').split('|').filter(v => v.trim() !== "").map(v => {
+        .replace(/ {3,}/g, '')
+        .split('|')
+        .filter(v => v.trim() !== "")
+        .map(v => {
             const trimmedValue = v.trim()
 
-            const num = parseFloat(v.trim().replace(/\./g, '').replace(/\,/g, '.'));
+            const num = parseFloat(v.trim()
+            .replace(/\./g, '')
+            .replace(/\,/g, '.'));
             if (isNaN(num)) {
                 return convertParenthesesToNumber(trimmedValue);
             } else {
@@ -35,12 +40,22 @@ export const extractProviment = (text: string): IProvimento[] => {
             }
 
         });
-    const initialIndex = tableArray.indexOf(beginWord || beginWordSub);
-    const endIndex = tableArray.findIndex(item => item.toString().trim().toLocaleLowerCase().includes(endWord.toLocaleLowerCase()));
-    const x = tableArray.slice(initialIndex, endIndex);
+    const initialIndex = tableArray.indexOf(beginWord);
+    const initialIndexSub = tableArray.indexOf(beginWordSub)
+    
+    const endIndex = tableArray
+        .findIndex(item => item
+            .toString().
+            trim()
+            .toLocaleLowerCase()
+            .includes(endWord.toLocaleLowerCase()));
 
+    const startIndex = initialIndex !== -1 ? initialIndex : initialIndexSub;
+    if (startIndex === -1) {
+        return [];
+    }
+    const x = tableArray.slice(startIndex, endIndex);
     const finalArray: Array<[string, number]> = [];
-
     let tempArray: [string, number] | null = null;
 
     x.forEach((item, index) => {
