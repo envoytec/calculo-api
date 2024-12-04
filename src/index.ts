@@ -10,7 +10,7 @@ import { ResumoCalculo } from "./entity/ResumoCalculo"
 import { ProvimentoGeral } from "./entity/provimentoGeral"
 import { join } from 'path'
 import fastify = require("fastify")
-import { routes } from './routes/routes';
+import { routes } from './routes/routesConfig';
 
 const main = async () => {
   //Criando instância do servidor

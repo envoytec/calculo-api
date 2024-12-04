@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+
 const convertParenthesesToNumber = (value) => {
     const match = value.match(/\(([^)]+)\)/);
     const endsWithNumberOrPorcent = /\(\s*\d+(\.\d+)?\s*%\s*\)/.test(value.trim());
@@ -37,8 +37,11 @@ export const extractResume = (text) => {
         .filter(v => v.trim() !== "" && blackListWord.findIndex(bw => v.includes(bw)) === -1).map(v => {
             const trimmedValue = v.trim()
 
-            if (!isNaN(trimmedValue.replace(/\./g, '').replace(/\,/g, '.') * 1)) {
-                return v.trim().replace(/\./g, '').replace(/\,/g, '.') * 1
+            if (!isNaN(trimmedValue.replace(/\./g, '')
+                .replace(/\,/g, '.') * 1)) {
+                return v.trim()
+                .replace(/\./g, '')
+                .replace(/\,/g, '.') * 1
             }
             else {
                 return convertParenthesesToNumber(trimmedValue);
@@ -46,7 +49,14 @@ export const extractResume = (text) => {
         });
 
     const initialIndex = tableArray.indexOf(beginWord) + 1;
-    const endIndex = tableArray.findIndex(item => item.toString().trim().toLocaleLowerCase().includes(endWord.toLocaleLowerCase()));
+    const endIndex = tableArray
+        .findIndex(item => item
+            .toString()
+            .trim()
+            .toLocaleLowerCase()
+            .includes(endWord
+                .toLocaleLowerCase()));
+
     const x = tableArray.splice(initialIndex, endIndex - initialIndex);
     const finalArray = [];
 
