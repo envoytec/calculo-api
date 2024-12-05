@@ -1,3 +1,4 @@
+
 type IProvimento = {
     Descricao: string;
     Valor: number;
@@ -21,10 +22,18 @@ export const extractProviment = (text: string): IProvimento[] => {
     const beginWord = "VERBAS";
     const beginWordSub = "Descrição de Créditos e Descontos do Reclamante";
     const endWord = "Critério de Cálculo e Fundamentação Legal";
-    const stopToggle = "Líquido Devido ao Reclamante"
-    const newDescription = "Descrição de Débitos do Reclamante"
+    const stopToggle = "Líquido Devido ao Reclamante";
+    const newDescription = "Descrição de Débitos do Reclamante";
+    const referenceEndDescription = "Total Devido pelo Reclamante";
+    const verbasNaoPrincipal = "Verbas que não compõem o Principal"
 
-    const tableArray: Array<any> = text.replace(/\n/g, '|')
+    // Regex para remover textos como "Pág. 1 de 25"
+    const removePaginationText = /Pág\.\s*\d+\s*de\s*\d+/g;
+
+
+    const cleanedText = text.replace(removePaginationText, '');
+
+    const tableArray: Array<any> = cleanedText.replace(/\n/g, '|')
         .replace(/ {3,}/g, '')
         .split('|')
         .filter(v => v.trim() !== "")
@@ -32,8 +41,8 @@ export const extractProviment = (text: string): IProvimento[] => {
             const trimmedValue = v.trim()
 
             const num = parseFloat(v.trim()
-            .replace(/\./g, '')
-            .replace(/\,/g, '.'));
+                .replace(/\./g, '')
+                .replace(/\,/g, '.'));
             if (isNaN(num)) {
                 return convertParenthesesToNumber(trimmedValue);
             } else {
@@ -71,6 +80,8 @@ export const extractProviment = (text: string): IProvimento[] => {
     const provimentoArr: IProvimento[] = [];
     let toggle = true;
     let stopToggleFound = false;
+    let verbasNaoPrincipalFound = false
+
 
     finalArray.forEach((item, index) => {
         const provimento: IProvimento = {
@@ -78,17 +89,41 @@ export const extractProviment = (text: string): IProvimento[] => {
             Valor: item[1]
         }
 
-        if (provimento.Descricao.includes(stopToggle)) {
+        if (provimento.Descricao.includes(stopToggle) && !stopToggleFound) {
             stopToggleFound = true;
-        }
-        if (!stopToggleFound) {
-            provimento.Tipo = index % 2 < 1 ? "reclamante" : "reclamada"
-        } else {
             provimento.Tipo = "reclamante"
+            
+        } else if (!stopToggleFound) {
+            provimento.Tipo = index % 2 < 1 ? "reclamante" : "reclamada"
+
+        } else if (provimento.Descricao.includes(verbasNaoPrincipal) && !verbasNaoPrincipalFound) {
+            verbasNaoPrincipalFound = true;
+            provimento.Tipo = "verbas nao principal";
+
+        } else if (verbasNaoPrincipalFound) {
+            provimento.Tipo = "verbas_nao_principal"
+        } else {
+            return
         }
         provimentoArr.push(provimento)
     });
 
+    //Verificação dos itens entre stoptoggle e endNewDescription para definir como tipo " reclamada "
+    if (stopToggleFound && endNewDescription !== -1) {
+        const itemsBetweenStoptoggleAndEnd = tableArray.slice(tableArray.indexOf(stopToggle) + 1, endNewDescription)
+        itemsBetweenStoptoggleAndEnd.forEach((item, index) => {
+            if (typeof item === "string" && (index + 1 < itemsBetweenStoptoggleAndEnd.length) && typeof itemsBetweenStoptoggleAndEnd[index + 1] === "number") {
+                const itemProvimento: IProvimento = {
+                    Descricao: item,
+                    Valor: itemsBetweenStoptoggleAndEnd[index + 1] as number,
+                    Tipo: "reclamada"
+                }
+                provimentoArr.push(itemProvimento)
+            }
+        })
+    }
+
+    // Processamento adicional para o restante dos itens
     if (stopToggleFound && endNewDescription !== -1) {
         const additionalItems = tableArray.slice(endNewDescription, endIndex);
         additionalItems.forEach((item, index) => {
@@ -96,7 +131,7 @@ export const extractProviment = (text: string): IProvimento[] => {
                 const additionalProvimento: IProvimento = {
                     Descricao: item,
                     Valor: additionalItems[index + 1] as number,
-                    Tipo: "reclamante" 
+                    Tipo: "reclamante"
                 };
                 provimentoArr.push(additionalProvimento);
             }
@@ -104,7 +139,7 @@ export const extractProviment = (text: string): IProvimento[] => {
     } else {
         const remainingItems = tableArray.slice(tableArray.indexOf(stopToggle) + 1, endIndex)
         remainingItems.forEach((item, index) => {
-            if ( typeof item === "string" && (index + 1 < remainingItems.length) && typeof remainingItems[index + 1] === "number") {
+            if (typeof item === "string" && (index + 1 < remainingItems.length) && typeof remainingItems[index + 1] === "number") {
                 const remaingProvimento: IProvimento = {
                     Descricao: item,
                     Valor: remainingItems[index + 1] as number,

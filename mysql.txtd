@@ -26,3 +26,58 @@ d.dataLiquidacao
 
 ORDER BY
 d.reclamante ASC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT
+d.calculo AS 'Código',
+d.reclamante AS 'Reclamante',
+d.reclamado AS 'Reclamada',
+d.processo AS 'Número do processo',
+d.periodoCalculo AS 'Período cálculo',
+DATE_FORMAT(d.dataAjuizamento, '%d/%m/%Y') AS 'Data do ajuizamento',
+DATE_FORMAT(d.dataLiquidacao, '%d/%m/%Y') AS 'Data da liquidação',
+r.descricao AS 'Verbas',
+REPLACE(SUM(r.valor), '.', ',') AS 'Valor corrigido',
+REPLACE(SUM(r.juros), '.', ',') AS 'Juros',
+REPLACE(SUM(r.total), '.', ',') AS 'Valor Total'
+
+FROM
+calculo.resumo_calculo r
+
+INNER JOIN calculo.dados_processo d ON r.dadosProcessoId = d.id
+
+GROUP BY
+d.calculo,
+d.reclamante,
+d.reclamado,
+d.processo,
+d.periodoCalculo,
+d.dataAjuizamento,
+d.dataLiquidacao,
+r.descricao
+
+ORDER BY
+d.reclamante ASC;
