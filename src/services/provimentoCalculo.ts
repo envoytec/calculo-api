@@ -22,6 +22,7 @@ export const extractProviment = (text: string): IProvimento[] => {
     const beginWordSub = "Descrição de Créditos e Descontos do Reclamante";
     const endWord = "Critério de Cálculo e Fundamentação Legal";
     const stopToggle = "Líquido Devido ao Reclamante"
+    const newDescription = "Descrição de Débitos do Reclamante"
 
     const tableArray: Array<any> = text.replace(/\n/g, '|')
         .replace(/ {3,}/g, '')
@@ -42,7 +43,9 @@ export const extractProviment = (text: string): IProvimento[] => {
         });
     const initialIndex = tableArray.indexOf(beginWord);
     const initialIndexSub = tableArray.indexOf(beginWordSub)
-    
+    const endNewDescription = tableArray.indexOf(newDescription)
+
+
     const endIndex = tableArray
         .findIndex(item => item
             .toString().
@@ -79,16 +82,39 @@ export const extractProviment = (text: string): IProvimento[] => {
             stopToggleFound = true;
         }
         if (!stopToggleFound) {
-            if (index % 2 < 1) {
-                provimento.Tipo = "reclamante"
-            } else {
-                provimento.Tipo = "reclamada"
-            }
+            provimento.Tipo = index % 2 < 1 ? "reclamante" : "reclamada"
         } else {
             provimento.Tipo = "reclamante"
         }
         provimentoArr.push(provimento)
     });
+
+    if (stopToggleFound && endNewDescription !== -1) {
+        const additionalItems = tableArray.slice(endNewDescription, endIndex);
+        additionalItems.forEach((item, index) => {
+            if (typeof item === 'string' && (index + 1 < additionalItems.length) && typeof additionalItems[index + 1] === 'number') {
+                const additionalProvimento: IProvimento = {
+                    Descricao: item,
+                    Valor: additionalItems[index + 1] as number,
+                    Tipo: "reclamante" 
+                };
+                provimentoArr.push(additionalProvimento);
+            }
+        });
+    } else {
+        const remainingItems = tableArray.slice(tableArray.indexOf(stopToggle) + 1, endIndex)
+        remainingItems.forEach((item, index) => {
+            if ( typeof item === "string" && (index + 1 < remainingItems.length) && typeof remainingItems[index + 1] === "number") {
+                const remaingProvimento: IProvimento = {
+                    Descricao: item,
+                    Valor: remainingItems[index + 1] as number,
+                    Tipo: "reclamada"
+                }
+                provimentoArr.push(remaingProvimento)
+            }
+        })
+    }
+
     console.log(provimentoArr)
     return provimentoArr;
 }
