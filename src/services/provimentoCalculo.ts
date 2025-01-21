@@ -78,7 +78,7 @@ export const extractProviment = (text: string): IProvimento[] => {
     });
     // Adicionar alternancia a cada dois elementos para separa-los em dois arrays para as tabelas.
     const provimentoArr: IProvimento[] = [];
-    let toggle = true;
+   
     let stopToggleFound = false;
     let verbasNaoPrincipalFound = false
 

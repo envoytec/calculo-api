@@ -12,5 +12,6 @@ export const saveFile = (filePath: string, data: Buffer) => {
 }
 
 export const getFilesDirectory = () => {
-    return path.join(__dirname, "C:\\Users\\kaue\\Desktop\\Tsc\\files\\")
+    return path.join(__dirname, "C:\Users\kaue\OneDrive - Envoy\Área de Trabalho\Tsc\files")
 }
+
