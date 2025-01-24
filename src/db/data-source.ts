@@ -3,6 +3,7 @@ import { DataSource } from "typeorm"
 import { DadosProcesso } from "../entity/DadosProcesso"
 import { ResumoCalculo } from "../entity/ResumoCalculo"
 import { ProvimentoGeral } from "../entity/provimentoGeral"
+import { SaveTimeEntity } from "../entity/SaveAt"
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -13,7 +14,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: true,
     logging: false,
-    entities: [DadosProcesso, ResumoCalculo, ProvimentoGeral],
+    entities: [DadosProcesso, ResumoCalculo, ProvimentoGeral, SaveTimeEntity],
     migrations: [],
     subscribers: [],
 })
