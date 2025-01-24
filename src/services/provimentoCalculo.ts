@@ -1,9 +1,4 @@
-
-type IProvimento = {
-    Descricao: string;
-    Valor: number;
-    Tipo?: string;
-};
+import { IProvimento }  from "../interfaces/iProvimento.interface";
 
 const convertParenthesesToNumber = (value) => {
     const match = value.match(/\(([^)]+)\)/);
@@ -24,6 +19,8 @@ export const extractProviment = (text: string): IProvimento[] => {
     const endWord = "Critério de Cálculo e Fundamentação Legal";
     const stopToggle = "Líquido Devido ao Reclamante";
     const newDescription = "Descrição de Débitos do Reclamante";
+
+    
     const referenceEndDescription = "Total Devido pelo Reclamante";
     const verbasNaoPrincipal = "Verbas que não compõem o Principal"
 

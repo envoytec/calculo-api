@@ -1,4 +1,4 @@
-
+import { IResumoCalculo } from "../interfaces/iResumoCalculo.interface";
 const convertParenthesesToNumber = (value) => {
     const match = value.match(/\(([^)]+)\)/);
     const endsWithNumberOrPorcent = /\(\s*\d+(\.\d+)?\s*%\s*\)/.test(value.trim());
@@ -10,15 +10,6 @@ const convertParenthesesToNumber = (value) => {
         return -num
     }
     return value
-}
-
-
-type IResumoCalculo = {
-    descricao: string,
-    valorCorrigido: number,
-    juros: number,
-    total: number,
-    valores: Array<number>
 }
 
 export const extractResume = (text) => {

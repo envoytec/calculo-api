@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "typeorm"
 import { ResumoCalculo } from "./ResumoCalculo"
 import { ProvimentoGeral } from "./provimentoGeral"
+// import { SaveAt } from "./SaveAt"
 
 @Entity()
 export class DadosProcesso {
@@ -35,4 +36,6 @@ export class DadosProcesso {
     @OneToMany(() => ProvimentoGeral, ProvimentoGeral => ProvimentoGeral.dadosProcesso)
     reclamanteProvimento: ProvimentoGeral[]
 
+    // @ManyToOne(() => SaveAt, saveAt => saveAt.dadosProcesso)
+    // saveAt: SaveAt
 }

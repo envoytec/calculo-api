@@ -3,6 +3,9 @@
       "lib": [
          "ES2023",
       ],
+      "typeRoots": [
+         "./node_modules/@types"
+      ],
       "target": "ES2022",
       "module": "commonjs",
       "moduleResolution": "node",
