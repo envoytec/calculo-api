@@ -1,29 +1,17 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { fileController } from "../controller/fileController";
+import { multipartMiddleware } from "../middleware/multipartMiddleware";
 
 export async function fileRoutes(fastify: FastifyInstance) {
     fastify.register(async (fileRoutes) => {
         
-        fileRoutes.post('/upload', async (request: FastifyRequest, reply: FastifyReply) => { 
-            try {
-                const data = await request.file();
 
-                if (!data) {
-                    return reply.status(400).send({ message: 'Nenhum arquivo enviado' });
-                }
-
-                const fileData = {
-                    filename: data.filename,
-                    file: data.file,
-                    fields: data.fields
-                }
-
-                await fileController(fileData, reply);
-            } catch (error) {
-                request.log.error(`Erro ao salvar o arquivo: ${error.message}`)
-                reply.status(500).send({ message: 'Erro ao salvar o arquivo' });
+        fileRoutes.post('/upload', {
+            preHandler: multipartMiddleware,  // Usando o middleware antes do handler
+            handler: async (request: FastifyRequest, reply: FastifyReply) => {
+                await fileController(request, reply);  // O controller agora pode acessar o arquivo processado no corpo da requisição
             }
-        })
+        });
         
-    })
-}    
+    });
+}

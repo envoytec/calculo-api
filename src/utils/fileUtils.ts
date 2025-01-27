@@ -20,7 +20,7 @@ export const ensureDirectory = (dirPath: string) => {
  * @returns Caminho completo onde o arquivo foi salvo.
  */
 export const saveFile = (fileStream: NodeJS.ReadableStream, fileName: string) => {
-    const uploadDirectory = path.join(__dirname, "C:\Users\kaue\OneDrive - Envoy\Área de Trabalho\Tsc\files")
+    const uploadDirectory = path.join(__dirname, "C:\\Users\\kaue\\OneDrive - Envoy\\Área de Trabalho\\Tsc\\files");
     ensureDirectory(uploadDirectory)
 
     const filePath = path.join(uploadDirectory, fileName)
