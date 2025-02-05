@@ -22,5 +22,20 @@
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
-  }
+  },
+  "name": "calculo-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kaue-123/calculo-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kaue-123/calculo-api/issues"
+  },
+  "homepage": "https://github.com/Kaue-123/calculo-api#readme",
+  "description": ""
 }

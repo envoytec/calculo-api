@@ -10,28 +10,30 @@ import { MultipartFile } from '@fastify/multipart';
 
 
 export const multipartMiddleware = async (request: FastifyRequest, reply: FastifyReply) => {
-    console.log('Middleware iniciado...');
-    console.log('Content-Type:', request.headers['content-type'])
-    if (request.isMultipart()) {
-        console.log('A requisição é multipart/form-data');
+    try {
+        const contentType = request.headers['content-type'];
+        if (!contentType || !contentType.includes('multipart/form-data')) {
+            return reply.status(415).send({ message: 'Tipo de mídia não suportado. Esperado multipart/form-data.' });
+        }
 
-     
-        const data: MultipartFile = await request.file(); 
-
-
-        console.log('Arquivo recebido:', data);
+        // Processar o arquivo
+        const data: MultipartFile = await request.file();
         if (data) {
             console.log('Arquivo recebido:', data.filename);
             request.body = {
                 filename: data.filename,
-                file: data.file,  // O arquivo (NodeJS.ReadableStream)
-                fields: data.fields,  
+                file: data.file, // O arquivo (NodeJS.ReadableStream)
+                fields: data.fields,
                 mimetype: data.mimetype,
-            } as FileRequestBody
+            } as FileRequestBody;
+
+            // Encerrar o middleware com sucesso
+            return reply.status(200).send({ message: 'Arquivo processado com sucesso.' });
         } else {
-            reply.status(400).send({ message: 'Nenhum arquivo enviado' });
+            return reply.status(400).send({ message: 'Nenhum arquivo enviado' });
         }
-    } else {
-        reply.status(415).send({ message: 'Tipo de mídia não suportado. Esperado multipart/form-data.' });
+    } catch (err) {
+        console.error('Erro no processamento do arquivo:', err);
+        return reply.status(500).send({ message: 'Erro no processamento do arquivo' });
     }
 };
