@@ -3,22 +3,26 @@ import { DadosProcesso } from '../entity/DadosProcesso'
 import { extractData, extractHeader } from '../services/headerCalculo'
 import { extractProviment } from "../services/provimentoCalculo"
 import { extractResume } from "../services/resumoCalculo"
-import { dateFromPtToEn, readFiles } from '../utils/util';
+import { dateFromPtToEn } from '../utils/util';
+import { readFiles } from "../utils/fileUtils";
 import { ResumoCalculo } from "../entity/ResumoCalculo"
 import { ProvimentoGeral } from "../entity/provimentoGeral"
 import { join } from 'path'
 import { SaveTimeEntity } from "../entity/SaveAt";
+
+
 import "reflect-metadata"
 import "dotenv/config"
 
-export const processDataInitialize = async () => {
+export const processDataInitialize = async (filepath: string) => {
     try {
-        const filesList = readFiles(process.env.REPORT_DIR);
+        const filesList = readFiles(process.env.REPORT_DIR)
 
         if (filesList.length > 0) {
-            filesList.forEach(async file => {
-                const rawData = await extractData(join(process.env.REPORT_DIR, file));
-                //const rawData = readFileSync('C:\\Users\\kaue\\Desktop\\Tsc\\planilhas1\\anderson.txt', { encoding: 'utf8', flag: 'r' });
+           for (let file of filesList) {
+                const fullfilePath = join(filepath, file)
+                const rawData = await extractData(fullfilePath);
+                
                 const header = extractHeader(rawData);
                 const dataAjuizamento = dateFromPtToEn(header.dataAjuizamento);
                 const dataLiquidacao = dateFromPtToEn(header.dataLiquidacao);
@@ -84,7 +88,7 @@ export const processDataInitialize = async () => {
                     }
                 }
                 console.log(dadosProcesso.reclamante + ' finalizado');
-            })
+            }
         }
     } catch (error) {
         console.log(error)

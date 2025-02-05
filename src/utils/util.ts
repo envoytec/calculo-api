@@ -10,15 +10,12 @@ export const extractBetween = (text, startWord, endWord) => {
   return extractedText.trim();
 }
 
-export const dateFromPtToEn = (dateString) => {
+export const dateFromPtToEn = (dateString: any) => {
   const match = dateString.match(/(\d{2})\/(\d{2})\/(\d{4})/);
   if (match) {
-      const [_, day, month, year] = match;
+      const [_, day, month, year] = match; 
       return `${year}-${month}-${day} 00:00:00`;
   }
   return null;
 }
 
-export const readFiles = (path) => {
-  return fs.readdirSync(path);
-}

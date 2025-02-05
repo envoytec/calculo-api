@@ -4,38 +4,28 @@ import { AppDataSource } from "./db/data-source"
 import fastify = require("fastify")
 import { routes } from './routes/routesConfig';
 import { processDataInitialize } from "./services/processDataInitialize"
-import fastifyMultipart from "@fastify/multipart";
-import { multipartMiddleware } from "./middleware/multipartMiddleware";
+
+import multipart from "@fastify/multipart";
+const path = require('path')
+
 
 const main = async () => {
   //Criando instância do servidor
   const server = fastify({ logger: true })
 
   // await server.register(routes);
-  server.register(fastifyMultipart, {
-    attachFieldsToBody: true,
-  })
-
-  server.addHook('onRequest', multipartMiddleware)
-
-//   server.addHook('onRequest', async (request, reply) => {
-//     console.log('--- Nova Requisição ---');
-//     console.log('Método:', request.method);
-//     console.log('URL:', request.url);
-//     console.log('Headers:', request.headers);
-
-//     if (request.method === 'POST' && request.isMultipart()) {
-//         console.log('A requisição é multipart/form-data');
-//     } else {
-//         console.log('A requisição NÃO é multipart/form-data');
-//     }
-// });
-
+  server.register(multipart, {
+    limits: { fileSize: 10 * 1024 * 1024 }
+  });
+ 
   server.register(routes)
 
+
+  const filepath = path.join(__dirname, 'files')
+  
   AppDataSource.initialize()
     .then(async () => {
-      processDataInitialize()
+      processDataInitialize(filepath)
     })
     .catch((error) => console.log(error))
 

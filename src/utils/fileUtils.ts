@@ -1,3 +1,5 @@
+import { pipeline } from "stream/promises";
+
 const fs = require('fs')
 const path = require('path')
 
@@ -19,43 +21,39 @@ export const ensureDirectory = (dirPath: string) => {
  * @param fileName - Nome do arquivo a ser salvo.
  * @returns Caminho completo onde o arquivo foi salvo.
  */
-export const saveFile = (fileStream: NodeJS.ReadableStream, fileName: string) => {
-    const uploadDirectory = path.join(__dirname, "C:\\Users\\kaue\\Desktop\\calculo-api\\files");
+export const saveFile = async (fileData: NodeJS.ReadableStream, fileName: string): Promise<String> => {
+    const uploadDirectory = path.resolve(__dirname, '../files')
     ensureDirectory(uploadDirectory)
 
-    const filePath = path.join(uploadDirectory, fileName)
+    const filePath = path.join(uploadDirectory, fileName);
+    const writeStream = fs.createWriteStream(filePath);
 
-    return new Promise((resolve, reject) => {
-        const writeStream = fs.createWriteStream(filePath);
-
-        fileStream.pipe(writeStream);
-
-        writeStream.on('finish', () => {
-            console.log(`Arquivo salvo com sucesso em: ${filePath}`)
-            resolve(filePath)
-        });
-
-        writeStream.on('error', (err) => {
-            console.error(`Erro ao salvar o arquivo: ${err.message}`)
-            reject(err)
-        })
-    })
-}
-
-
+    try {
+        await pipeline(fileData, writeStream); // Garante o fechamento correto dos streams
+        console.log(`Arquivo salvo em: ${filePath}`);
+        return filePath;
+    } catch (err) {
+        console.error("Erro ao salvar o arquivo:", err);
+        throw err;
+    }
+};
 /**
  * Retorna o diretório padrão onde os arquivos serão salvos.
  * @returns Caminho do diretório.
  */
 export const getFilesDirectory = () => {
-    return path.join(__dirname, "C:\Users\kaue\OneDrive - Envoy\Área de Trabalho\Tsc\files")
-}
+    return path.resolve(__dirname, '../files');
+};
 
+export const readFiles = (path) => {
+    return fs.readdirSync(path);
+  }
 
 /**
  * Retorna o diretório padrão onde os arquivos XLSX serão salvos.
  * @returns Caminho do diretório.
  */
+
 export const xlsxDirectory = () => {
-    return path.join(__dirname, "C:\Users\kaue\OneDrive - Envoy\Área de Trabalho\Tsc\data-xlsx")
+    return path.resolve(__dirname, '../file-xlsx');
 }

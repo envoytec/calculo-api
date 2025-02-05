@@ -16,7 +16,7 @@ export async function uploadFiles(data: { filename: string, file: NodeJS.Readabl
     ensureDirectory(uploadDirectory)
 
     const filePath = path.join(uploadDirectory, data.filename);
-    saveFile(data.file, filePath)
+    await saveFile(data.file, filePath)
 
     return filePath
 }

@@ -5,10 +5,11 @@
     "typeorm": "typeorm-ts-node-commonjs"
   },
   "dependencies": {
-    "@fastify/multipart": "^6.0.0",
+    "@fastify/multipart": "^8.3.1",
     "cheerio": "^1.0.0",
+    "chokidar": "^4.0.3",
     "dotenv": "^16.4.5",
-    "fastify": "^5.0.0",
+    "fastify": "^4.29.0",
     "fs": "^0.0.1-security",
     "mysql2": "^3.11.3",
     "puppeteer": "^23.4.1",
