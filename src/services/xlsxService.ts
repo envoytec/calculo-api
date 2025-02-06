@@ -1,28 +1,43 @@
-import { getFromDatabase } from "../db/databaseQueryColumns";
-import * as xlsx from 'xlsx';
-import * as path from 'path';
-import { ensureDirectory, xlsxDirectory } from "../utils/fileUtils";
+import * as XLSX from 'xlsx';
+import * as fs from 'fs';
+
+import { xlsxDirectory } from '../utils/fileUtils';
+import { queryDataFormat } from '../db/queryDataBase';
+
+
+import path = require('path');
 
 /**
- * Gera um arquivo XLSX com base nos dados de um registro do banco de dados.
- * @param recordId - ID do registro no banco de dados.
- * @returns Caminho completo do arquivo XLSX gerado.
+ * Cria um arquivo XLSX com os dados fornecidos do banco.
+ * @constant createXlsxFileFromDatabase - Cria o arquivo xlsx com base nos dados do banco de dados.
+ * @param fileName - Nome do arquivo XLSX a ser gerado.
  */
+export const createXlsxFileFromDatabase = async (fileName: string, recordId: string) => {
+    try {
+        
+        const data = await queryDataFormat();
 
-export async function generateXlsx(recordId: number){
+        // Cria uma planilha a partir dos dados retornados
+        const ws = XLSX.utils.json_to_sheet(data);
 
-    const { columns, rows } = await getFromDatabase(recordId)
+        
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Resumo_Calculo'); // Nome da aba na planilha
 
-    const worksheet = xlsx.utils.json_to_sheet(rows, { header: columns })
-    const workbook = xlsx.utils.book_new();
-    xlsx.utils.book_append_sheet(workbook, worksheet, 'Dados do Processo')
+        // Obtém o diretório de saída para salvar o arquivo XLSX
+        const outputDirectory = xlsxDirectory();  
+        if (!fs.existsSync(outputDirectory)) {
+            fs.mkdirSync(outputDirectory, { recursive: true }); 
+        }
 
-    const directory = xlsxDirectory()
-    ensureDirectory(directory)
+        const filePath = path.join(outputDirectory, fileName, recordId);
 
-    const xlsxFilePath = path.join(directory, `dados-processo-${recordId}.xlsx`)
+        // Escreve o arquivo XLSX
+        XLSX.writeFile(wb, filePath);
 
-    xlsx.writeFile(workbook, xlsxFilePath);
-
-    return xlsxFilePath
-}
+        console.log(`Arquivo XLSX salvo em: ${filePath}`);
+        return filePath;
+    } catch (error) {
+        console.error('Erro ao criar o XLSX:', error);
+    }
+};
