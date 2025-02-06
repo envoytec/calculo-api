@@ -16,7 +16,7 @@ import "dotenv/config"
 
 export const processDataInitialize = async (filepath: string) => {
     try {
-        const filesList = readFiles(process.env.REPORT_DIR)
+        const filesList = readFiles(filepath)
 
         if (filesList.length > 0) {
            for (let file of filesList) {
