@@ -1,6 +1,14 @@
 const puppeteer = require('puppeteer');
 import { extractBetween } from '../utils/util';
 
+
+
+/**
+ * 
+ * @param filePath 
+ * @constant browser carregado pelo puppeter
+ * @returns  Retorna o texto extraído da tabela
+ */
 export const extractData = async (filePath) => {
   try {
     const browser = await puppeteer.launch({ headless: true, executablePath: process.env.EXECUTABLE_PATH });
@@ -20,6 +28,12 @@ export const extractData = async (filePath) => {
   }
 }
 
+
+/**
+ * 
+ * @param constant extrai o cabeçalho da tabela 
+ * @returns dados do cabeçalho
+ */
 export const extractHeader = (text: any) => {
   const cleanedText = text.replaceAll(/\n/g, '').replaceAll(/\s+/g, ' ');
 

@@ -10,19 +10,19 @@ const path = require('path')
 
 
 const main = async () => {
-  //Criando instância do servidor
+
   const server = fastify({ logger: true })
 
-  // await server.register(routes);
+
   server.register(multipart, {
     limits: { fileSize: 10 * 1024 * 1024 }
   });
- 
+
   server.register(routes)
 
 
   const filepath = path.join(__dirname, 'files')
-  
+
   AppDataSource.initialize()
     .then(async () => {
       processDataInitialize(filepath)
@@ -30,7 +30,7 @@ const main = async () => {
     .catch((error) => console.log(error))
 
 
-  //Decidindo a porta em que vai rodar
+  
   const port = 145;
   server.listen({ port }, (err) => {
     if (err) {

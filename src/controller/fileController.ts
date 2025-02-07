@@ -10,12 +10,9 @@ export async function fileController(request: FastifyRequest, reply: FastifyRepl
     try {
 
         if (!request.isMultipart()) {
-            return reply.status(400).send({ message: 'Tipo de mídia não suportado'})
+            return reply.status(400).send({ message: 'Tipo de mídia não suportado' })
         }
 
-        console.log('Requisição multipart' )
-
-            
         const data = await request.file()
         // const file = await request.file(); // Processa o arquivo aqui
         if (!data) {

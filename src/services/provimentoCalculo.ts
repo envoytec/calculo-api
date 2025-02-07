@@ -1,4 +1,10 @@
-import { IProvimento }  from "../interfaces/iProvimento.interface";
+import { IProvimento } from "../interfaces/iProvimento.interface";
+
+/**
+ * 
+ * @constant Função para converter números entre parênteses em negativos 
+ * @returns Retorna o valor do número convertido
+ */
 
 const convertParenthesesToNumber = (value) => {
     const match = value.match(/\(([^)]+)\)/);
@@ -13,6 +19,13 @@ const convertParenthesesToNumber = (value) => {
     return value
 }
 
+
+/**
+ * 
+ * @constant Função para extrair os provimentos do texto
+ * @returns Retorna um array de objetos com os provimentos
+ */
+
 export const extractProviment = (text: string): IProvimento[] => {
     const beginWord = "VERBAS";
     const beginWordSub = "Descrição de Créditos e Descontos do Reclamante";
@@ -20,7 +33,7 @@ export const extractProviment = (text: string): IProvimento[] => {
     const stopToggle = "Líquido Devido ao Reclamante";
     const newDescription = "Descrição de Débitos do Reclamante";
 
-    
+
     const referenceEndDescription = "Total Devido pelo Reclamante";
     const verbasNaoPrincipal = "Verbas que não compõem o Principal"
 
@@ -28,6 +41,9 @@ export const extractProviment = (text: string): IProvimento[] => {
     const removePaginationText = /Pág\.\s*\d+\s*de\s*\d+/g;
 
 
+    /**
+     * @constant Limpa o texto removendo a paginação
+     */
     const cleanedText = text.replace(removePaginationText, '');
 
     const tableArray: Array<any> = cleanedText.replace(/\n/g, '|')
@@ -47,6 +63,11 @@ export const extractProviment = (text: string): IProvimento[] => {
             }
 
         });
+
+     /**
+      * @constant Encontra o índice inicial e final do texto
+      * @returns Retorna o índice inicial e final do texto
+      */   
     const initialIndex = tableArray.indexOf(beginWord);
     const initialIndexSub = tableArray.indexOf(beginWordSub)
     const endNewDescription = tableArray.indexOf(newDescription)
@@ -54,8 +75,8 @@ export const extractProviment = (text: string): IProvimento[] => {
 
     const endIndex = tableArray
         .findIndex(item => item
-            .toString().
-            trim()
+            .toString()
+            .trim()
             .toLocaleLowerCase()
             .includes(endWord.toLocaleLowerCase()));
 
@@ -75,11 +96,15 @@ export const extractProviment = (text: string): IProvimento[] => {
     });
     // Adicionar alternancia a cada dois elementos para separa-los em dois arrays para as tabelas.
     const provimentoArr: IProvimento[] = [];
-   
+
     let stopToggleFound = false;
     let verbasNaoPrincipalFound = false
 
 
+    /**
+     * @constant Adiciona os provimentos ao array
+     * @returns Retorna o array de provimentos
+     */
     finalArray.forEach((item, index) => {
         const provimento: IProvimento = {
             Descricao: item[0],
@@ -89,7 +114,7 @@ export const extractProviment = (text: string): IProvimento[] => {
         if (provimento.Descricao.includes(stopToggle) && !stopToggleFound) {
             stopToggleFound = true;
             provimento.Tipo = "reclamante"
-            
+
         } else if (!stopToggleFound) {
             provimento.Tipo = index % 2 < 1 ? "reclamante" : "reclamada"
 

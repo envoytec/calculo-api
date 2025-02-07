@@ -1,4 +1,6 @@
 import { IResumoCalculo } from "../interfaces/iResumoCalculo.interface";
+
+
 const convertParenthesesToNumber = (value) => {
     const match = value.match(/\(([^)]+)\)/);
     const endsWithNumberOrPorcent = /\(\s*\d+(\.\d+)?\s*%\s*\)/.test(value.trim());
@@ -12,6 +14,12 @@ const convertParenthesesToNumber = (value) => {
     return value
 }
 
+
+/**
+ * 
+ * @constant Função para extrair o resumo do cálculo do texto
+ * @returns Retorna um array de objetos com os resumos
+ */
 export const extractResume = (text) => {
 
     const beginWord = "Total";
