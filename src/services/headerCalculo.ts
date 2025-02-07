@@ -4,9 +4,8 @@ import { extractBetween } from '../utils/util';
 
 
 /**
- * 
- * @param filePath 
  * @constant browser carregado pelo puppeter
+ * @param filePath 
  * @returns  Retorna o texto extraído da tabela
  */
 export const extractData = async (filePath) => {

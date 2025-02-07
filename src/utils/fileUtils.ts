@@ -50,10 +50,22 @@ export const getFilesDirectory = () => {
     return path.resolve(__dirname, '../files');
 };
 
+
+/**
+ * @param path
+ * @constant Executa a leitura dos arquivos no diretório 
+ * @returns Retorna os arquivos no diretório
+ */
 export const readFiles = (path: string): string[] => {
   return fs.existsSync(path) ? fs.readdirSync(path) : [] ;
 }
 
+
+/**
+ * @param directory 
+ * @param callback 
+ * @constant Processa o arquivo no diretório
+ */
 
 function processFile(directory: string, callback: FileCallback): void {
     let previousFiles = new Set<string>(readFiles(directory));
