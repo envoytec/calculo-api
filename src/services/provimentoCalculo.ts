@@ -1,24 +1,5 @@
 import { IProvimento } from "../interfaces/iProvimento.interface";
-
-/**
- * 
- * @constant Função para converter números entre parênteses em negativos 
- * @returns Retorna o valor do número convertido
- */
-
-const convertParenthesesToNumber = (value) => {
-    const match = value.match(/\(([^)]+)\)/);
-    const endsWithNumberOrPorcent = /\(\s*\d+(\.\d+)?\s*%\s*\)/.test(value.trim());
-    if (match && !endsWithNumberOrPorcent) {
-        const num = parseFloat(match[1].replace('.', '').replace(',', '.'));
-        if (isNaN(num)) {
-            return value;
-        }
-        return -num
-    }
-    return value
-}
-
+import { convertParenthesesToNumber } from "./resumoCalculo";
 
 /**
  * 
