@@ -1,7 +1,6 @@
 import * as path from 'path'
 
-import { ensureDirectory, saveFile, getFilesDirectory } from '../utils/fileUtils'
-
+import { ensureDirectory, getFilesDirectory, saveFile } from '../../shared/utils/fileUtils';
 
 /**
  * Faz o upload de um arquivo para o diretório especificado.

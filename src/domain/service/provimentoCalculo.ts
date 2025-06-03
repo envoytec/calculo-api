@@ -1,4 +1,4 @@
-import { IProvimento } from "../interfaces/iProvimento.interface";
+import { IProvimento } from "../../interfaces/iProvimento.interface";
 import { convertParenthesesToNumber } from "./resumoCalculo";
 
 /**

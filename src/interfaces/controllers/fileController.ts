@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { saveFile } from "../utils/fileUtils";
+import { saveFile } from "../../shared/utils/fileUtils";
 
 /**
  * 

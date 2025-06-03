@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, OneToOne } from "typeorm"
 import { ResumoCalculo } from "./ResumoCalculo"
 import { ProvimentoGeral } from "./provimentoGeral"
+import { SaveTimeEntity } from "./SaveAt"
 // import { SaveAt } from "./SaveAt"
 
 @Entity()
@@ -30,12 +31,12 @@ export class DadosProcesso {
     @Column( { type: 'date', nullable: true} ) 
     dataLiquidacao: Date
     
-    @OneToMany(() => ResumoCalculo, resumoCalculo => resumoCalculo.dadosProcesso)
+    @OneToMany(() => ResumoCalculo, resumoCalculo => resumoCalculo.dadosProcesso, { onDelete: 'CASCADE'} )
     reclamanteResumoCalculo: ResumoCalculo[]
 
-    @OneToMany(() => ProvimentoGeral, ProvimentoGeral => ProvimentoGeral.dadosProcesso)
+    @OneToMany(() => ProvimentoGeral, ProvimentoGeral => ProvimentoGeral.dadosProcesso, { onDelete: 'CASCADE'} )
     reclamanteProvimento: ProvimentoGeral[]
 
-    // @ManyToOne(() => SaveAt, saveAt => saveAt.dadosProcesso)
-    // saveAt: SaveAt
+    @OneToOne(() => SaveTimeEntity, saveTime => saveTime.dadosProcesso, { onDelete: 'CASCADE'} )
+    saveTime: SaveTimeEntity
 }

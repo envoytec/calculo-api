@@ -1,18 +1,17 @@
-import { AppDataSource } from "../db/data-source";
-import { DadosProcesso } from '../entity/DadosProcesso'
-import { extractData, extractHeader } from '../services/headerCalculo'
-import { extractProviment } from "../services/provimentoCalculo"
-import { extractResume } from "../services/resumoCalculo"
-import { dateFromPtToEn } from '../utils/util';
-import { readFiles } from "../utils/fileUtils";
-import { ResumoCalculo } from "../entity/ResumoCalculo"
-import { ProvimentoGeral } from "../entity/provimentoGeral"
-import { join } from 'path'
-import { SaveTimeEntity } from "../entity/SaveAt";
-
 
 import "reflect-metadata"
 import "dotenv/config"
+import { join } from "path"
+import { AppDataSource } from "../../db/data-source"
+import { readFiles } from "../../shared/utils/fileUtils"
+import { dateFromPtToEn } from "../../shared/utils/util"
+import { DadosProcesso } from "../../modules/calculo/entities/DadosProcesso"
+import { ProvimentoGeral } from "../../modules/calculo/entities/provimentoGeral"
+import { ResumoCalculo } from "../../modules/calculo/entities/ResumoCalculo"
+import { SaveTimeEntity } from "../../modules/calculo/entities/SaveAt"
+import { extractData, extractHeader } from "./headerCalculo"
+import { extractProviment } from "./provimentoCalculo"
+import { extractResume } from "./resumoCalculo"
 
 export const processDataInitialize = async (filepath: string) => {
     try {

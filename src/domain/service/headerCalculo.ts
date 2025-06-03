@@ -1,6 +1,5 @@
 const puppeteer = require('puppeteer');
-import { extractBetween } from '../utils/util';
-
+import { extractBetween } from "../../shared/utils/util";
 
 
 /**

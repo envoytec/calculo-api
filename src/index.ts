@@ -2,8 +2,8 @@ import "reflect-metadata"
 import "dotenv/config"
 import { AppDataSource } from "./db/data-source"
 import fastify = require("fastify")
-import { routes } from './routes/routesConfig';
-import { processDataInitialize } from "./services/processDataInitialize"
+import { routes } from './interfaces/routes/routesConfig';
+import { processDataInitialize } from "./domain/service/processDataInitialize"
 
 import multipart from "@fastify/multipart";
 const path = require('path')

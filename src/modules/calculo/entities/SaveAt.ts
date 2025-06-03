@@ -10,10 +10,10 @@ export class SaveTimeEntity {
     name: string;
 
     @OneToOne(() => DadosProcesso, { onDelete: 'CASCADE' })
+    @JoinColumn()
+    dadosProcesso: DadosProcesso;
     @CreateDateColumn({
         type: 'timestamp', nullable: true
     }) createdAt: Date;
 
-    @JoinColumn()
-    dadosProcesso: DadosProcesso;
 }

@@ -1,4 +1,4 @@
-import { IResumoCalculo } from "../interfaces/iResumoCalculo.interface";
+import { IResumoCalculo } from "../../interfaces/iResumoCalculo.interface";
 
 
 export const convertParenthesesToNumber = (value) => {
@@ -38,8 +38,8 @@ export const extractResume = (text) => {
             if (!isNaN(trimmedValue.replace(/\./g, '')
                 .replace(/\,/g, '.') * 1)) {
                 return v.trim()
-                .replace(/\./g, '')
-                .replace(/\,/g, '.') * 1
+                    .replace(/\./g, '')
+                    .replace(/\,/g, '.') * 1
             }
             else {
                 return convertParenthesesToNumber(trimmedValue);
@@ -78,7 +78,7 @@ export const extractResume = (text) => {
         }
         return f;
     }).filter(f => f.valores.length > 2);
-    
+
     return y;
 }
 

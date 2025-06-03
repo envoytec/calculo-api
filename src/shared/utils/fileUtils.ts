@@ -1,5 +1,5 @@
 import { pipeline } from "stream/promises";
-import { processDataInitialize } from "../services/processDataInitialize";
+import { processDataInitialize } from "../../domain/service/processDataInitialize";
 
 const fs = require('fs')
 const path = require('path')
@@ -34,7 +34,7 @@ export const saveFile = async (fileData: NodeJS.ReadableStream, fileName: string
     const writeStream = fs.createWriteStream(filePath);
 
     try {
-        await pipeline(fileData, writeStream); // Garante o fechamento correto dos streams
+        await pipeline(fileData, writeStream); 
         console.log(`Arquivo salvo em: ${filePath}`);
         return filePath;
     } catch (err) {

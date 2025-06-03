@@ -1,5 +1,5 @@
 import { AppDataSource } from "./data-source";
-import { DadosProcesso } from '../entity/DadosProcesso'
+import { DadosProcesso } from "../modules/calculo/entities/DadosProcesso";
 
 /**
  * Obtém dados do banco de dados para um determinado registro.
