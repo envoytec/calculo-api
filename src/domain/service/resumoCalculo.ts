@@ -1,20 +1,5 @@
 import { IResumoCalculo } from "../../interfaces/iResumoCalculo.interface";
-
-
-export const convertParenthesesToNumber = (value) => {
-    const match = value.match(/\(([^)]+)\)/);
-    const endsWithNumberOrPorcent = /\(\s*\d+(\.\d+)?\s*%\s*\)/.test(value.trim());
-    if (match && !endsWithNumberOrPorcent) {
-        const num = parseFloat(match[1].replace('.', '').replace(',', '.'));
-        if (isNaN(num)) {
-            return value;
-        }
-        return -num
-    }
-    return value
-}
-
-
+import { convertParenthesesToNumber } from "../../shared/utils/convertCharacter";
 /**
  * 
  * @constant Função para extrair o resumo do cálculo do texto

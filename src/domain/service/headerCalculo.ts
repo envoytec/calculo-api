@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+import puppeteer from "puppeteer";
 import { extractBetween } from "../../shared/utils/util";
 
 

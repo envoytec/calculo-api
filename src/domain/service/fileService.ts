@@ -1,5 +1,4 @@
 import * as path from 'path'
-
 import { ensureDirectory, getFilesDirectory, saveFile } from '../../shared/utils/fileUtils';
 
 /**

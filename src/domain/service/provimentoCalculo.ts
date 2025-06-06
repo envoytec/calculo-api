@@ -1,6 +1,5 @@
 import { IProvimento } from "../../interfaces/iProvimento.interface";
-import { convertParenthesesToNumber } from "./resumoCalculo";
-
+import { convertParenthesesToNumber } from "../../shared/utils/convertCharacter";
 /**
  * 
  * @constant Função para extrair os provimentos do texto
