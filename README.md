@@ -129,4 +129,4 @@ src/
 ## Notes
 
 - The server runs on port 145 by default
-- Uploaded files are stored in the `src/files` directory 
+- Uploaded files are stored in the `src/shared/files` directory 
