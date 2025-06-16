@@ -1,9 +1,9 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { DadosProcesso } from "../modules/calculo/entities/DadosProcesso"
-import { ResumoCalculo } from "../modules/calculo/entities/ResumoCalculo"
-import { ProvimentoGeral } from "../modules/calculo/entities/provimentoGeral"
-import { SaveTimeEntity } from "../modules/calculo/entities/SaveAt"
+import { DadosProcesso } from "../Models/calculo/entities/DadosProcesso"
+import { ResumoCalculo } from "../Models/calculo/entities/ResumoCalculo"
+import { ProvimentoGeral } from "../Models/calculo/entities/provimentoGeral"
+import { SaveTimeEntity } from "../Models/calculo/entities/SaveAt"
 
 export const AppDataSource = new DataSource({
     type: "mysql",

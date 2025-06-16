@@ -1,5 +1,3 @@
-
-
 export const convertParenthesesToNumber = (value) => {
     const match = value.match(/\(([^)]+)\)/);
     const endsWithNumberOrPorcent = /\(\s*\d+(\.\d+)?\s*%\s*\)/.test(value.trim());

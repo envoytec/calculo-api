@@ -5,10 +5,10 @@ import { join } from "path"
 import { AppDataSource } from "../../db/data-source"
 import { readFiles } from "../../shared/utils/fileUtils"
 import { dateFromPtToEn } from "../../shared/utils/util"
-import { DadosProcesso } from "../../modules/calculo/entities/DadosProcesso"
-import { ProvimentoGeral } from "../../modules/calculo/entities/provimentoGeral"
-import { ResumoCalculo } from "../../modules/calculo/entities/ResumoCalculo"
-import { SaveTimeEntity } from "../../modules/calculo/entities/SaveAt"
+import { DadosProcesso } from "../../Models/calculo/entities/DadosProcesso"
+import { ProvimentoGeral } from "../../Models/calculo/entities/provimentoGeral"
+import { ResumoCalculo } from "../../Models/calculo/entities/ResumoCalculo"
+import { SaveTimeEntity } from "../../Models/calculo/entities/SaveAt"
 import { extractData, extractHeader } from "./headerCalculo"
 import { extractProviment } from "./provimentoCalculo"
 import { extractResume } from "./resumoCalculo"
@@ -16,12 +16,16 @@ import { extractResume } from "./resumoCalculo"
 export const processDataInitialize = async (filepath: string) => {
     try {
         const filesList = readFiles(filepath)
+        console.log("Arquivos encontrados:", filesList);
 
         if (filesList.length > 0) {
-           for (let file of filesList) {
+            for (let file of filesList) {
                 const fullfilePath = join(filepath, file)
+
+                console.log("Processando:", fullfilePath);
+
                 const rawData = await extractData(fullfilePath);
-                
+
                 const header = extractHeader(rawData);
                 const dataAjuizamento = dateFromPtToEn(header.dataAjuizamento);
                 const dataLiquidacao = dateFromPtToEn(header.dataLiquidacao);
@@ -90,6 +94,6 @@ export const processDataInitialize = async (filepath: string) => {
             }
         }
     } catch (error) {
-        console.log(error)
+        console.log(error.message)
     }
 }

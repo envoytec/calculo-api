@@ -1,11 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { saveFile } from "../../shared/utils/fileUtils";
 
-/**
- * 
- Controller de arquivos - Processa o arquivo no diretório adequado 
- */
-
 export async function fileController(request: FastifyRequest, reply: FastifyReply) {
     try {
 

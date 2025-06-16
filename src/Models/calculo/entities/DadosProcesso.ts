@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, OneToOne } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, OneToOne, CreateDateColumn } from "typeorm"
 import { ResumoCalculo } from "./ResumoCalculo"
 import { ProvimentoGeral } from "./provimentoGeral"
 import { SaveTimeEntity } from "./SaveAt"
@@ -30,6 +30,10 @@ export class DadosProcesso {
 
     @Column( { type: 'date', nullable: true} ) 
     dataLiquidacao: Date
+
+    @CreateDateColumn({
+        type: 'timestamp', nullable: true
+    }) createdAt: Date;
     
     @OneToMany(() => ResumoCalculo, resumoCalculo => resumoCalculo.dadosProcesso, { onDelete: 'CASCADE'} )
     reclamanteResumoCalculo: ResumoCalculo[]

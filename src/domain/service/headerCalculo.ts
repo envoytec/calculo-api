@@ -21,8 +21,8 @@ export const extractData = async (filePath) => {
     }, bodyHandle);
     await browser.close();
     return data;
-  } catch (e: any) {
-    console.error(e)
+  } catch (error: any) {
+    console.error(error.message)
   }
 }
 
