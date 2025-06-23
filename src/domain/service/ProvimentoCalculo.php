@@ -16,32 +16,40 @@ class ProvimentoCalculo
     public function extractProviment(string $text): array
     {
         $beginWord = "VERBAS";
-        $beginWordSub = "Descrição de Créditos e Descontos do Reclamante";
+        $beginWordSub = "  Descrição de Créditos e Descontos do Reclamante";
         $endWord = "Critério de Cálculo e Fundamentação Legal";
-        $stopToggle = "Líquido Devido ao Reclamante";
-        $newDescription = "Descrição de Débitos do Reclamante";
-        $referenceEndDescription = "Total Devido pelo Reclamante";
-        $verbasNaoPrincipal = "Verbas que não compõem o Principal";
+        $stopToggle = "  Líquido Devido ao Reclamante   ";
+        $newDescription = "  Descrição de Débitos do Reclamante";
+        $referenceEndDescription = "  Total Devido pelo Reclamado";
+        $verbasNaoPrincipal = "  Verbas que não compõem o Principal";
 
         $cleanedText = preg_replace('/Pág\.\s*\d+\s*de\s*\d+/', '', $text);
-        $tableArray = array_map(
-            function ($v) {
-                $trimmedValue = trim($v);
-                if (is_numeric(str_replace(['.', ','], ['', '.'], $trimmedValue))) {
-                    return (float) str_replace(['.', ','], ['', '.'], $trimmedValue);
-                }
-                return $this->fileUtils->convertParenthesesToNumber($trimmedValue);
-            },
-            array_filter(
-                explode('|', preg_replace('/\s+/', '', str_replace("\n", '|', $cleanedText)))
-            )
-        );
+
+        $startPos = strpos($cleanedText, $beginWord);
+        $endPos = strpos($cleanedText, $endWord);
+
+        if ($startPos === false || $endPos === false || $startPos >= $endPos) {
+            return [];
+        }
+
+        $endPosAdjusted = $endPos + strlen($endWord);
+        $relevantText = substr($cleanedText, $startPos, $endPosAdjusted - $startPos);
+
+        $parts = explode('|', str_replace("\n", '|', $relevantText));
+        $filteredParts = array_filter(array_map('trim', $parts), fn($v) => $v !== '');
+        
+        $tableArray = array_map(function ($v) {
+            if (is_numeric(str_replace(['.', ','], ['', '.'], $v))) {
+                return (float) str_replace(['.', ','], ['', '.'], $v);
+            }
+            return $this->fileUtils->convertParenthesesToNumber($v);
+        }, $filteredParts);
 
         $initialIndex = array_search($beginWord, $tableArray);
         $initialIndexSub = array_search($beginWordSub, $tableArray);
         $endNewDescription = array_search($newDescription, $tableArray);
         $endIndex = array_search(
-            $endWord,
+            strtolower($endWord),
             array_map(
                 fn($item) => strtolower(trim((string)$item)),
                 $tableArray
