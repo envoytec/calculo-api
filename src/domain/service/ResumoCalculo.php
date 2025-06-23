@@ -36,29 +36,45 @@ class ResumoCalculo
                     }
                     return $this->fileUtils->convertParenthesesToNumber($trimmedValue);
                 },
-                explode('|', preg_replace('/\s+/', '', str_replace("\n", '|', $text)))
+                explode('|', str_replace("\n", '|', $text))
             )
         );
 
-        $initialIndex = array_search($beginWord, $tableArray) + 1;
-        $endIndex = array_search(
-            $endWord,
-            array_map(
-                fn($item) => strtolower(trim((string)$item)),
-                $tableArray
-            )
-        );
+        // Correção do código. Onde estava retornando endIndex false e um array errado.
+
+        $initialIndex = null;
+        foreach (array_values($tableArray) as $key => $value) {
+            if (is_string($value) && strtolower(trim($value)) === strtolower($beginWord)) {
+                $initialIndex = $key + 1;
+                break;
+            }
+        }
+        if ($initialIndex === null) {
+            echo "Erro: Palavra $beginWord não encontrada no array";
+            return [];
+        }
+
+        $endIndex = null;
+        foreach (array_values($tableArray) as $key => $value) {
+            if (is_string($value) && stripos($value, $endWord) !== false && $key > $initialIndex) {
+                $endIndex = $key;
+                break;
+            }
+        }
+
+        if ($endIndex === null) {
+            echo "Erro: Palavra de fim ('Percentual de Parcelas Remuneratórias') não encontrada.";
+            return [];
+        }
 
         $x = array_slice($tableArray, $initialIndex, $endIndex - $initialIndex);
         $finalArray = [];
-        $currentItem = null;
 
         foreach ($x as $item) {
             if (is_string($item)) {
-                $currentItem = ['descricao' => $item, 'valores' => []];
-                $finalArray[] = $currentItem;
-            } elseif (is_numeric($item) && $currentItem !== null) {
-                $currentItem['valores'][] = $item;
+                $finalArray[] = ['descricao' => $item, 'valores' => []];
+            } elseif (is_numeric($item) && !empty($finalArray)) {
+                $finalArray[count($finalArray) - 1]['valores'][] = $item;
             }
         }
 
@@ -79,4 +95,4 @@ class ResumoCalculo
             )
         );
     }
-} 
+}
