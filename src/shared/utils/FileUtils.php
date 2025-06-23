@@ -6,12 +6,11 @@ class FileUtils
 {
     private string $uploadDirectory;
 
-    
+
     public function __construct()
     {
         $this->uploadDirectory = dirname(__DIR__) . '/files';
         $this->ensureDirectory($this->uploadDirectory);
-        error_log("Upload Directory: " . $this->uploadDirectory);
     }
 
     private function ensureDirectory(string $dirPath): void
@@ -48,15 +47,15 @@ class FileUtils
             error_log("readFiles: '$path' não é um diretório válido.");
             return [];
         }
-    
+
         $files = array_diff(scandir($path), ['.', '..']);
-    
+
         if (empty($files)) {
             error_log("readFiles: Nenhum arquivo encontrado em '$path'.");
         } else {
             error_log("readFiles: Arquivos encontrados em '$path': " . implode(', ', $files));
         }
-    
+
         return $files;
     }
 
@@ -67,7 +66,7 @@ class FileUtils
             return '';
         }
         $startPos += strlen($startWord);
-        
+
         $endPos = strpos($text, $endWord, $startPos);
         if ($endPos === false) {
             return '';
@@ -94,17 +93,17 @@ class FileUtils
     {
         if (preg_match('/\(([^)]+)\)/', $value, $matches)) {
             $endsWithNumberOrPercent = preg_match('/\(\s*\d+(\.\d+)?\s*%\s*\)/', trim($value));
-            
+
             if (!$endsWithNumberOrPercent) {
                 $num = str_replace(['.', ','], ['', '.'], $matches[1]);
                 $num = (float) $num;
-                
+
                 if (!is_nan($num)) {
                     return -$num;
                 }
             }
         }
-        
+
         return $value;
     }
-} 
+}
