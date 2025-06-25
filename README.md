@@ -5,19 +5,43 @@ This is a PHP version of the Calculo API, which processes legal calculation file
 ## Requirements
 
 - PHP 8.2 or higher
-- Composer
+- Composer 2.8 or higher
 - MySQL 5.7 or higher
+
+### How to check if you already have PHP and Composer installed
+
+Open your terminal (Command Prompt, PowerShell, or VSCode Terminal) and run:
+
+```powershell
+php -v
+```
+Make sure the version is 8.2 or higher.
+
+```powershell
+composer --version
+```
+Make sure the version is 2.8 or higher.
+
+If both are installed and meet the version requirements, proceed to the next step.
+
+If any of the commands above do not work or the version is lower than required, follow the instructions below to install:
 
 ## Installation
 
-1. Install PHP and Composer:
-```powershell
-# Install PHP
-winget install PHP.PHP
+1. Install PHP and Composer (if you don't have them or need to update):
 
-# Install Composer
+On Windows, use winget:
+
+```powershell
+winget install PHP.PHP
 winget install Composer.Composer
 ```
+
+> After installing, close and reopen your terminal to ensure the commands work correctly.
+
+For other operating systems, see the official documentation:
+- [PHP Downloads](https://www.php.net/downloads.php)
+- [Composer Download](https://getcomposer.org/download/)
 
 2. Clone the repository and install dependencies:
 ```powershell
