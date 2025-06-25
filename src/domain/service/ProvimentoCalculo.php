@@ -16,12 +16,12 @@ class ProvimentoCalculo
     public function extractProviment(string $text): array
     {
         $beginWord = "VERBAS";
-        $beginWordSub = "  Descrição de Créditos e Descontos do Reclamante";
+        $beginWordSub = "Descrição de Créditos e Descontos do Reclamante";
         $endWord = "Critério de Cálculo e Fundamentação Legal";
-        $stopToggle = "  Líquido Devido ao Reclamante   ";
-        $newDescription = "  Descrição de Débitos do Reclamante";
-        $referenceEndDescription = "  Total Devido pelo Reclamado";
-        $verbasNaoPrincipal = "  Verbas que não compõem o Principal";
+        $stopToggle = "Líquido Devido ao Reclamante";
+        $newDescription = "Descrição de Débitos do Reclamante";
+        $referenceEndDescription = "Total Devido pelo Reclamado";
+        $verbasNaoPrincipal = "Verbas que não compõem o Principal";
 
         $cleanedText = preg_replace('/Pág\.\s*\d+\s*de\s*\d+/', '', $text);
 
@@ -37,7 +37,7 @@ class ProvimentoCalculo
 
         $parts = explode('|', str_replace("\n", '|', $relevantText));
         $filteredParts = array_filter(array_map('trim', $parts), fn($v) => $v !== '');
-        
+
         $tableArray = array_map(function ($v) {
             if (is_numeric(str_replace(['.', ','], ['', '.'], $v))) {
                 return (float) str_replace(['.', ','], ['', '.'], $v);
@@ -72,6 +72,7 @@ class ProvimentoCalculo
         }
 
         $provimentoArr = [];
+
         $stopToggleFound = false;
         $verbasNaoPrincipalFound = false;
 
@@ -81,7 +82,7 @@ class ProvimentoCalculo
                 'Valor' => $item[1]
             ];
 
-            if (strpos($provimento['Descricao'], $stopToggle) !== false && !$stopToggleFound) {
+            if (trim($provimento['Descricao'], $stopToggle) === $stopToggle && !$stopToggleFound) {
                 $stopToggleFound = true;
                 $provimento['Tipo'] = "reclamante";
             } elseif (!$stopToggleFound) {
@@ -98,25 +99,42 @@ class ProvimentoCalculo
             $provimentoArr[] = $provimento;
         }
 
-        // Process remaining items
-        if ($stopToggleFound && $endNewDescription !== false) {
-            $itemsBetweenStoptoggleAndEnd = array_slice(
-                $tableArray,
-                array_search($stopToggle, $tableArray) + 1,
-                $endNewDescription - array_search($stopToggle, $tableArray) - 1
-            );
-
-            for ($i = 0; $i < count($itemsBetweenStoptoggleAndEnd) - 1; $i++) {
-                if (is_string($itemsBetweenStoptoggleAndEnd[$i]) && is_numeric($itemsBetweenStoptoggleAndEnd[$i + 1])) {
+        // Process remaining items based on endNewDescription existence
+        if ($endNewDescription !== false) {
+            // Se endNewDescription existe: processa itens entre endNewDescription e endIndex como "reclamante"
+            $additionalItems = array_slice($tableArray, $endNewDescription, $endIndex - $endNewDescription);
+            
+            for ($i = 0; $i < count($additionalItems) - 1; $i++) {
+                if (is_string($additionalItems[$i]) && is_numeric($additionalItems[$i + 1])) {
                     $provimentoArr[] = [
-                        'Descricao' => $itemsBetweenStoptoggleAndEnd[$i],
-                        'Valor' => $itemsBetweenStoptoggleAndEnd[$i + 1],
-                        'Tipo' => "reclamada"
+                        'Descricao' => $additionalItems[$i],
+                        'Valor' => $additionalItems[$i + 1],
+                        'Tipo' => "reclamante"
                     ];
+                }
+            }
+        } else {
+            // Se endNewDescription não existe: processa itens entre stopToggle e endIndex como "reclamada"
+            $stopToggleIndex = array_search($stopToggle, $tableArray);
+            if ($stopToggleIndex !== false) {
+                $remainingItems = array_slice(
+                    $tableArray,
+                    $stopToggleIndex + 1,
+                    $endIndex - $stopToggleIndex - 1
+                );
+                
+                for ($i = 0; $i < count($remainingItems) - 1; $i++) {
+                    if (is_string($remainingItems[$i]) && is_numeric($remainingItems[$i + 1])) {
+                        $provimentoArr[] = [
+                            'Descricao' => $remainingItems[$i],
+                            'Valor' => $remainingItems[$i + 1],
+                            'Tipo' => "reclamada"
+                        ];
+                    }
                 }
             }
         }
 
         return $provimentoArr;
     }
-} 
+}
