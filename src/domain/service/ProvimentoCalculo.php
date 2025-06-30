@@ -18,21 +18,29 @@ class ProvimentoCalculo
         $beginWord = "VERBAS";
         $beginWordSub = "Descrição de Créditos e Descontos do Reclamante";
         $endWord = "Critério de Cálculo e Fundamentação Legal";
-        $stopToggle = "Líquido Devido ao Reclamante";
+        $stopToggle = "Líquido Devido ao Reclamante  ";
         $newDescription = "Descrição de Débitos do Reclamante";
         $referenceEndDescription = "Total Devido pelo Reclamado";
-        $verbasNaoPrincipal = "Verbas que não compõem o Principal";
-
+        $endword2 = "Verbas que não compõem o Principal";
         $cleanedText = preg_replace('/Pág\.\s*\d+\s*de\s*\d+/', '', $text);
 
         $startPos = strpos($cleanedText, $beginWord);
         $endPos = strpos($cleanedText, $endWord);
+        $endword2Pos = strpos($cleanedText, $endword2);
 
         if ($startPos === false || $endPos === false || $startPos >= $endPos) {
             return [];
         }
 
-        $endPosAdjusted = $endPos + strlen($endWord);
+        // Se endword2 existir e vier antes do endWord, use ela como fim
+        $usingEndword2 = false;
+        if ($endword2Pos !== false && $endword2Pos < $endPos) {
+            $endPos = $endword2Pos;
+            $usingEndword2 = true;
+        }
+
+        $endWordToUse = $usingEndword2 ? $endword2 : $endWord;
+        $endPosAdjusted = $endPos + strlen($endWordToUse);
         $relevantText = substr($cleanedText, $startPos, $endPosAdjusted - $startPos);
 
         $parts = explode('|', str_replace("\n", '|', $relevantText));
@@ -48,13 +56,21 @@ class ProvimentoCalculo
         $initialIndex = array_search($beginWord, $tableArray);
         $initialIndexSub = array_search($beginWordSub, $tableArray);
         $endNewDescription = array_search($newDescription, $tableArray);
+        $endIndexWord = $usingEndword2 ? $endword2 : $endWord;
         $endIndex = array_search(
-            strtolower($endWord),
+            strtolower($endIndexWord),
             array_map(
                 fn($item) => strtolower(trim((string)$item)),
                 $tableArray
             )
         );
+
+        // Verificar se há variações do texto
+        foreach ($tableArray as $i => $item) {
+            if (is_string($item) && stripos($item, "Descrição de Débitos") !== false) {
+                // error_log("DEBUG - Encontrou variação em índice $i: " . $item);
+            }
+        }
 
         $startIndex = $initialIndex !== false ? $initialIndex : $initialIndexSub;
         if ($startIndex === false) {
@@ -63,7 +79,6 @@ class ProvimentoCalculo
 
         $x = array_slice($tableArray, $startIndex, $endIndex - $startIndex);
         $finalArray = [];
-        $tempArray = null;
 
         for ($i = 0; $i < count($x) - 1; $i++) {
             if (is_string($x[$i]) && is_numeric($x[$i + 1])) {
@@ -72,6 +87,25 @@ class ProvimentoCalculo
         }
 
         $provimentoArr = [];
+
+        // Nova lógica: identificar a sequência especial
+        $totalDescontosIdx = null;
+        $liquidoDevidoIdx = null;
+        for ($i = 0; $i < count($finalArray) - 1; $i++) {
+            if (
+                is_string($finalArray[$i][0]) &&
+                stripos($finalArray[$i][0], 'Total de Descontos') !== false &&
+                isset($finalArray[$i + 1][0]) &&
+                is_string($finalArray[$i + 1][0]) &&
+                stripos($finalArray[$i + 1][0], 'Líquido Devido ao Reclamante') !== false
+            ) {
+                $totalDescontosIdx = $i;
+                $liquidoDevidoIdx = $i + 1;
+                break;
+            }
+        }
+
+        $forceReclamanteFromIdx = $totalDescontosIdx !== null ? $totalDescontosIdx : null;
 
         $stopToggleFound = false;
         $verbasNaoPrincipalFound = false;
@@ -82,57 +116,24 @@ class ProvimentoCalculo
                 'Valor' => $item[1]
             ];
 
-            if (trim($provimento['Descricao'], $stopToggle) === $stopToggle && !$stopToggleFound) {
+            // Encontrar onde este item está no tableArray
+            $itemPositionInTable = array_search($item[0], $tableArray);
+
+            // Nova lógica: se estivermos na sequência especial, forçar reclamante
+            if ($forceReclamanteFromIdx !== null && $index >= $forceReclamanteFromIdx) {
+                $provimento['Tipo'] = 'reclamante';
+            } elseif (strpos($provimento['Descricao'], $stopToggle) !== false && !$stopToggleFound) {
                 $stopToggleFound = true;
                 $provimento['Tipo'] = "reclamante";
             } elseif (!$stopToggleFound) {
                 $provimento['Tipo'] = $index % 2 < 1 ? "reclamante" : "reclamada";
-            } elseif (strpos($provimento['Descricao'], $verbasNaoPrincipal) !== false && !$verbasNaoPrincipalFound) {
-                $verbasNaoPrincipalFound = true;
-                $provimento['Tipo'] = "verbas nao principal";
-            } elseif ($verbasNaoPrincipalFound) {
-                $provimento['Tipo'] = "verbas_nao_principal";
+            } elseif ($endNewDescription !== false && $itemPositionInTable !== false && $itemPositionInTable >= $endNewDescription) {
+                $provimento['Tipo'] = "reclamante";
             } else {
-                continue;
+                $provimento['Tipo'] = "reclamada";
             }
 
             $provimentoArr[] = $provimento;
-        }
-
-        // Process remaining items based on endNewDescription existence
-        if ($endNewDescription !== false) {
-            // Se endNewDescription existe: processa itens entre endNewDescription e endIndex como "reclamante"
-            $additionalItems = array_slice($tableArray, $endNewDescription, $endIndex - $endNewDescription);
-            
-            for ($i = 0; $i < count($additionalItems) - 1; $i++) {
-                if (is_string($additionalItems[$i]) && is_numeric($additionalItems[$i + 1])) {
-                    $provimentoArr[] = [
-                        'Descricao' => $additionalItems[$i],
-                        'Valor' => $additionalItems[$i + 1],
-                        'Tipo' => "reclamante"
-                    ];
-                }
-            }
-        } else {
-            // Se endNewDescription não existe: processa itens entre stopToggle e endIndex como "reclamada"
-            $stopToggleIndex = array_search($stopToggle, $tableArray);
-            if ($stopToggleIndex !== false) {
-                $remainingItems = array_slice(
-                    $tableArray,
-                    $stopToggleIndex + 1,
-                    $endIndex - $stopToggleIndex - 1
-                );
-                
-                for ($i = 0; $i < count($remainingItems) - 1; $i++) {
-                    if (is_string($remainingItems[$i]) && is_numeric($remainingItems[$i + 1])) {
-                        $provimentoArr[] = [
-                            'Descricao' => $remainingItems[$i],
-                            'Valor' => $remainingItems[$i + 1],
-                            'Tipo' => "reclamada"
-                        ];
-                    }
-                }
-            }
         }
 
         return $provimentoArr;
