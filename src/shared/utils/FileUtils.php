@@ -92,18 +92,12 @@ class FileUtils
     public function convertParenthesesToNumber(string $value): string|float
     {
         if (preg_match('/\(([^)]+)\)/', $value, $matches)) {
-            $endsWithNumberOrPercent = preg_match('/\(\s*\d+(\.\d+)?\s*%\s*\)/', trim($value));
-
-            if (!$endsWithNumberOrPercent) {
-                $num = str_replace(['.', ','], ['', '.'], $matches[1]);
-                $num = (float) $num;
-
-                if (!is_nan($num)) {
-                    return -$num;
-                }
+            $inner = str_replace(['.', ','], ['', '.'], $matches[1]);
+            if (is_numeric($inner)) {
+                $num = (float) $inner;
+                return -$num;
             }
         }
-
         return $value;
     }
 }
