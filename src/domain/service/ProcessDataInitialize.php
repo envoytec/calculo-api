@@ -98,7 +98,6 @@ class ProcessDataInitialize
                     // Process resume data
                     $resume = $this->resumoCalculo->extractResume($rawData);
                     $index = 1;
-                    error_log(json_encode($resume));
                     if (!empty($resume)) {
                         foreach ($resume as $row) {
                             $this->db->getConnection()->insert('resumo_calculo', [
