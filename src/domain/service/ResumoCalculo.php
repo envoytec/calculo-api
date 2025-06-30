@@ -22,25 +22,46 @@ class ResumoCalculo
             "Pág.",
         ];
 
-        $tableArray = array_filter(
-            array_map(
-                function ($v) use ($blackListWord) {
-                    $trimmedValue = trim($v);
-                    foreach ($blackListWord as $bw) {
-                        if (strpos($trimmedValue, $bw) !== false) {
-                            return null;
+        $items = explode('|', str_replace("\n", '|', $text));
+        $tableArray = [];
+        $count = count($items);
+        
+        for ($i = 0; $i < $count; $i++) {
+            $v = $items[$i];
+            $trimmedValue = trim($v);
+        
+            if ($trimmedValue === '') {
+                continue;
+            }
+        
+            $isBlacklisted = false;
+            foreach ($blackListWord as $bw) {
+                if (strpos($trimmedValue, $bw) !== false) {
+                    $isBlacklisted = true;
+        
+                    if ($bw === 'Pág.' && ($i + 1) < $count) {
+                        $nextTrimmedValue = trim($items[$i + 1]);
+                        if (is_numeric(str_replace(['.', ','], ['', '.'], $nextTrimmedValue))) {
+                            $i++;
                         }
                     }
-                    if (is_numeric(str_replace(['.', ','], ['', '.'], $trimmedValue))) {
-                        return (float) str_replace(['.', ','], ['', '.'], $trimmedValue);
-                    }
-                    return $this->fileUtils->convertParenthesesToNumber($trimmedValue);
-                },
-                explode('|', str_replace("\n", '|', $text))
-            )
-        );
-
-        // Correção do código. Onde estava retornando endIndex false e um array errado.
+                    break;
+                }
+            }
+        
+            if ($isBlacklisted) {
+                continue;
+            }
+        
+            if (is_numeric(str_replace(['.', ','], ['', '.'], $trimmedValue))) {
+                $tableArray[] = (float) str_replace(['.', ','], ['', '.'], $trimmedValue);
+            } else {
+                $value = $this->fileUtils->convertParenthesesToNumber($trimmedValue);
+                if ($value !== null && $value !== '') {
+                    $tableArray[] = $value;
+                }
+            }
+        }
 
         $initialIndex = null;
         foreach (array_values($tableArray) as $key => $value) {
@@ -68,6 +89,25 @@ class ResumoCalculo
         }
 
         $x = array_slice($tableArray, $initialIndex, $endIndex - $initialIndex);
+
+        $x = array_values($x);
+        $lastElementIndex = count($x) - 1;
+
+        if ($lastElementIndex > 0) {
+            $lastElement = $x[$lastElementIndex];
+            if (is_string($lastElement) && strtolower(trim($lastElement)) === 'total') {
+                if (
+                    $lastElementIndex >= 3 &&
+                    is_numeric($x[$lastElementIndex - 1]) &&
+                    is_numeric($x[$lastElementIndex - 2]) &&
+                    is_numeric($x[$lastElementIndex - 3])
+                ) {
+                    $totalWord = array_pop($x);
+                    array_splice($x, count($x) - 3, 0, [$totalWord]);
+                }
+            }
+        }
+        
         $finalArray = [];
 
         foreach ($x as $item) {
@@ -96,3 +136,4 @@ class ResumoCalculo
         );
     }
 }
+
